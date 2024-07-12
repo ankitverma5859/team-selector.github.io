@@ -61,7 +61,7 @@
         const randomIndex = Math.floor(Math.random() * teams.length);
         const selectedTeam = teams.splice(randomIndex, 1)[0];
         usedTeams.push(selectedTeam);
-        document.getElementById('result').innerText = `Team ${selectedTeam.number} - ${selectedTeam.name}`;
+        document.getElementById('result').innerText = `${selectedTeam.name}`;
 
         let chosenTeamsText = 'Teams already chosen:<br>';
         usedTeams.forEach(team => {
