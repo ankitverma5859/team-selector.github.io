@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Scrum Team Selector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        #chosenTeams {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h1>Random Scrum Team Selector</h1>
+    <button id="generateButton" onclick="generateRandomTeam()">Choose Scrum Team</button>
+    <p id="result"></p>
+    <div id="chosenTeams"></div>
+</div>
+
+<script>
+    const teams = [
+        { number: 0, name: 'ST0: Team SmileCloud' },
+        { number: 1, name: 'ST1: Team Jaipal' },
+        { number: 5, name: 'ST5: Team SiAB' },
+        { number: 7, name: 'ST7: Team Owls' },
+        { number: 8, name: 'ST8: Team Eagle' },
+        { number: 9, name: 'ST9: Team Hawks' },
+        { number: 100, name: 'ST100: Team B-M-S-P' }
+    ];
+    const usedTeams = [];
+
+    function generateRandomTeam() {
+        if (teams.length === 0) {
+            document.getElementById('result').innerText = 'All teams are shown. All teams done!';
+            document.getElementById('generateButton').disabled = true;
+            return;
+        }
+        const randomIndex = Math.floor(Math.random() * teams.length);
+        const selectedTeam = teams.splice(randomIndex, 1)[0];
+        usedTeams.push(selectedTeam);
+        document.getElementById('result').innerText = `Team ${selectedTeam.number} - ${selectedTeam.name}`;
+
+        let chosenTeamsText = 'Teams already chosen:<br>';
+        usedTeams.forEach(team => {
+            chosenTeamsText += `Team ${team.number} - ${team.name}<br>`;
+        });
+        document.getElementById('chosenTeams').innerHTML = chosenTeamsText;
+    }
+</script>
+
+</body>
+</html>
