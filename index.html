@@ -48,7 +48,7 @@
         { number: 7, name: 'ST7: Team Owls' },
         { number: 8, name: 'ST8: Team Eagle' },
         { number: 9, name: 'ST9: Team Hawks' },
-        { number: 100, name: 'ST100: Team B-M-S-P' }
+        { number: 100, name: 'ST100: Team Infinity' }
     ];
     const usedTeams = [];
 
@@ -65,7 +65,7 @@
 
         let chosenTeamsText = 'Teams already chosen:<br>';
         usedTeams.forEach(team => {
-            chosenTeamsText += `Team ${team.number} - ${team.name}<br>`;
+            chosenTeamsText += `${team.name}<br>`;
         });
         document.getElementById('chosenTeams').innerHTML = chosenTeamsText;
     }
