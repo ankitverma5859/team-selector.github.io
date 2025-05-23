@@ -346,7 +346,7 @@
             }
 
             // Get the current date in YYYY-MM-DD format
-            const today = new Date().toISOString().split('T')[1];
+            const today = new Date().toISOString().split('T')[0];
 
             // Use a hash function to convert the date string into a consistent "random" seed
             const seed = today.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -354,7 +354,7 @@
             // Generate a pseudo-random index based on the seed and list length
             const index = Math.abs(Math.sin(seed) * list.length) % list.length;
 
-            return list[Math.floor(index)];
+            return list[Math.floor(index+1)];
         }
 
         const hosts = [
