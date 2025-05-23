@@ -154,7 +154,9 @@
     <div class="container py-5">
         <h1 class="text-center mb-2">Scrum Team Selector</h1>
         <p class="date" id="currentDate"></p>
-        <p id="todaysHost" class="d-flex justify-content-end"></p>
+        <p id="todaysHost1" class="d-flex justify-content-end"></p>
+        <p id="todaysHost2" class="d-flex justify-content-end"></p>
+        <p id="todaysHost2" class="d-flex justify-content-end"></p>
         <div class="row" style="margin-top: 50px;">
             <!-- First Column: All Teams -->
             <div class="col-12 col-md-4">
@@ -339,13 +341,39 @@
         }
 
         const hosts = [
-                        'Pankaj'
+                        'Pankaj',
+                        'Anil',
+                        'Manoj',
+                        'Kanchan',
+                        'Rohan',
+                        'Sneha',
+                        'Rohit',
+                        'Jaipal',
+                        'Chethan',
+                        'Sreeram',
+                        'Purushothama',
+                        'Paras',
+                        'Arjun',
+                        'Amit',
+                        'Harsith',
+                        'Sushmitha',
+                        'Deekshith',
+                        'Prakriti',
+                        'Karan',
+                        'Srilakshmi',
+                        'Sheel',
+                        'Madan',
+                        'Kavya',
+                        'Manish',
+                        'Anusha'
                     ];
 
         function setHost() {
             const selectedHost = getRandomItemForToday(hosts);
 
-            document.getElementById('todaysHost').innerHTML = `Today's Host: <span class="host-name"><strong>${selectedHost}</strong></span>`;
+            document.getElementById('todaysHost1').innerHTML = `Today's Host 1: <span class="host-name"><strong>${selectedHost}</strong></span>`;
+            document.getElementById('todaysHost2').innerHTML = `Today's Host 1: <span class="host-name"><strong>${selectedHost}</strong></span>`;
+            document.getElementById('todaysHost3').innerHTML = `Today's Host 1: <span class="host-name"><strong>${selectedHost}</strong></span>`;
 
         }
 
