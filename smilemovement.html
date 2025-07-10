@@ -111,16 +111,16 @@ const data = [
       { "name": "Madan", "smile_contribution": 110 },
       { "name": "Madhu", "smile_contribution": 60 },
       { "name": "Mahesh", "smile_contribution": 115 },
-      { "name": "Manoj", "smile_contribution": 0 },
+      //{ "name": "Manoj", "smile_contribution": 0 },
       { "name": "Karthik", "smile_contribution": 170 }
     ]
   },
-  {
-    "team-name": "ST1 Octopus",
-    "members": [
-      { "name": "Jaipal", "smile_contribution": 0 }
-    ]
-  },
+  //{
+  //  "team-name": "ST1 Octopus",
+  //  "members": [
+  //    { "name": "Jaipal", "smile_contribution": 0 }
+  //  ]
+  //},
   {
     "team-name": "ST3 Dolphin",
     "members": [
@@ -130,7 +130,7 @@ const data = [
       { "name": "Kavya", "smile_contribution": 125 },
       { "name": "Karan", "smile_contribution": 125 },
       { "name": "Kavitha", "smile_contribution": 10 },
-      { "name": "Chirag", "smile_contribution": 0 },
+      //{ "name": "Chirag", "smile_contribution": 0 },
       { "name": "Sheel", "smile_contribution": 85 }
     ]
   },
@@ -233,7 +233,7 @@ new Chart(ctxTeams, {
 		  font:{weight:'bold'},
 		  formatter:(value, ctx)=>{
 			const team = sortedTeams[ctx.dataIndex];
-			return `${team.count} members`;
+			return `${team.count} active members`;
 		  }
 		}
     },
