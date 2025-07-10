@@ -1,1 +1,327 @@
-Smille  Movement
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Smile Movement Leaderboard</title>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+<style>
+  body {
+    background: #f9fafa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #222;
+  }
+  .page-header {
+    background: #e8f5e9;
+    padding: 40px 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 30px 0;
+  }
+  .page-header h1 {
+    font-weight: 600;
+    color: #2e7d32;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  .card {
+    border-radius: 12px;
+  }
+  .accordion-item {
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    margin-bottom: 12px;
+  }
+  .accordion-button {
+    background: #ffffff;
+    padding: 1rem 1.25rem;
+  }
+  .accordion-button:hover {
+    background: #f1f8e9;
+  }
+  .accordion-body {
+    background: #fafafa;
+  }
+  .list-group-item {
+    border: none;
+    padding: 0.75rem 1rem;
+  }
+  .list-group-item + .list-group-item {
+    border-top: 1px solid #eee;
+  }
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="page-header">
+    <h1>Smile Movement Leaderboard</h1>
+    <div id="totalPoints" class="subtitle"></div>
+  </div>
+
+  <!-- Teams Bar Chart -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <canvas id="teamChart" style="min-height:600px"></canvas>
+    </div>
+  </div>
+
+  <!-- Two-column layout -->
+  <div class="row gy-4">
+    <!-- Teams List -->
+    <div class="col-lg-4">
+      <div id="teamsContainer" class="accordion"></div>
+    </div>
+
+    <!-- Members Chart -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary mb-3">Individual Contributions</h5>
+          <canvas id="membersChart" style="max-height:900px"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+const data = [
+  {
+    "team-name": "ST0 Beaver",
+    "members": [
+      { "name": "Anil", "smile_contribution": 450 },
+      { "name": "Arjun", "smile_contribution": 70 },
+      { "name": "Anusha", "smile_contribution": 130 },
+      { "name": "Aneesh", "smile_contribution": 110 },
+      { "name": "Bala", "smile_contribution": 700 },
+      { "name": "Kanchan", "smile_contribution": 150 },
+      { "name": "Madan", "smile_contribution": 110 },
+      { "name": "Madhu", "smile_contribution": 60 },
+      { "name": "Mahesh", "smile_contribution": 115 },
+      { "name": "Manoj", "smile_contribution": 0 },
+      { "name": "Karthik", "smile_contribution": 170 }
+    ]
+  },
+  {
+    "team-name": "ST1 Octopus",
+    "members": [
+      { "name": "Jaipal", "smile_contribution": 0 }
+    ]
+  },
+  {
+    "team-name": "ST3 Dolphin",
+    "members": [
+      { "name": "Harsha", "smile_contribution": 145 },
+      { "name": "Sharmistha", "smile_contribution": 60 },
+      { "name": "Sreeram", "smile_contribution": 150 },
+      { "name": "Kavya", "smile_contribution": 125 },
+      { "name": "Karan", "smile_contribution": 125 },
+      { "name": "Kavitha", "smile_contribution": 0 },
+      { "name": "Chirag", "smile_contribution": 0 },
+      { "name": "Sheel", "smile_contribution": 85 }
+    ]
+  },
+  {
+    "team-name": "ST5 Phoenix",
+    "members": [
+      { "name": "Sunil", "smile_contribution": 30 },
+      { "name": "Bhoomi", "smile_contribution": 115 },
+      { "name": "Rajyogi", "smile_contribution": 220 },
+      { "name": "Pankaj", "smile_contribution": 220 },
+      { "name": "Deeksith", "smile_contribution": 20 },
+      { "name": "Purush", "smile_contribution": 75 },
+      { "name": "Sneha", "smile_contribution": 25 }
+    ]
+  },
+  {
+    "team-name": "ST7 Owl",
+    "members": [
+      { "name": "Anand", "smile_contribution": 165 },
+      { "name": "Ankit", "smile_contribution": 655 },
+      { "name": "Paras", "smile_contribution": 310 },
+      { "name": "Manish", "smile_contribution": 55 },
+      { "name": "Amit", "smile_contribution": 285 },
+      { "name": "Anupriya", "smile_contribution": 10 }
+    ]
+  },
+  {
+    "team-name": "ST8 Eagle",
+    "members": [
+      { "name": "Natesh", "smile_contribution": 60 },
+      { "name": "Rohit", "smile_contribution": 0 },
+      { "name": "Rohan", "smile_contribution": 265 },
+      { "name": "Kishore", "smile_contribution": 240 },
+      { "name": "Chethan", "smile_contribution": 195 },
+      { "name": "Sushmitha", "smile_contribution": 120 },
+      { "name": "Harsith", "smile_contribution": 280 },
+      { "name": "Prakriti", "smile_contribution": 375 },
+      { "name": "Sreelaxmi", "smile_contribution": 85 },
+      { "name": "Balaji", "smile_contribution": 35 }
+    ]
+  },
+  {
+    "team-name": "ST100 Infinity",
+    "members": [
+      { "name": "Balu", "smile_contribution": 211 },
+      { "name": "Pooja", "smile_contribution": 220 },
+      { "name": "Manju", "smile_contribution": 145 },
+      { "name": "Bala M", "smile_contribution": 245 },
+      { "name": "Asha", "smile_contribution": 140 }
+    ]
+  }
+];
+
+
+const sortedTeams = data.map(team => {
+  const total = team.members.reduce((sum, m) => sum + m.smile_contribution, 0);
+  const sortedMembers = [...team.members].sort((a,b) => b.smile_contribution - a.smile_contribution);
+  const count = team.members.length;
+  const avg = count > 0 ? Math.round(total / count) : 0;
+  return { name: team["team-name"], total, avg, count, members: sortedMembers };
+}).sort((a,b) => b.avg - a.avg);
+
+
+const totalPoints = sortedTeams.reduce((sum,t)=>sum+t.total,0);
+document.getElementById('totalPoints').innerHTML = `Total Smile Points <strong>${totalPoints}</strong>`;
+
+const colors = [
+  '#66bb6a','#42a5f5','#ffa726','#ab47bc','#26a69a',
+  '#ec407a','#7e57c2','#ff7043','#26c6da','#8d6e63'
+];
+
+const ctxTeams = document.getElementById('teamChart').getContext('2d');
+new Chart(ctxTeams, {
+  type: 'bar',
+  data: {
+    labels: sortedTeams.map(t=>t.name),
+    datasets: [{
+      label: 'Smile Contribution',
+      data: sortedTeams.map(t=>t.total),
+      backgroundColor: colors.slice(0,sortedTeams.length),
+      borderRadius:6
+    }]
+  },
+  options: {
+    indexAxis:'y',
+    scales: { x:{beginAtZero:true} },
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#fff',
+        titleColor:'#000',
+        bodyColor:'#000',
+        borderColor:'#ccc',
+        borderWidth:1
+      },
+      datalabels:{
+		  anchor:'center',
+		  align:'center',
+		  color:'#fff',
+		  font:{weight:'bold'},
+		  formatter:(value, ctx)=>{
+			const team = sortedTeams[ctx.dataIndex];
+			return `${team.count} members`;
+		  }
+		}
+    },
+    responsive:true,
+    maintainAspectRatio:false
+  },
+  plugins:[ChartDataLabels]
+});
+
+const allMembers = sortedTeams.flatMap(t=>
+  t.members.map(m=>({
+    name:`${m.name} (${t.name})`,
+    contribution:m.smile_contribution
+  }))
+).sort((a,b)=>b.contribution - a.contribution);
+
+const ctxMembers = document.getElementById('membersChart').getContext('2d');
+new Chart(ctxMembers, {
+  type:'bar',
+  data:{
+    labels:allMembers.map(m=>m.name),
+    datasets:[{
+      label:'Smile Contribution',
+      data:allMembers.map(m=>m.contribution),
+      backgroundColor:'#42a5f5',
+      borderRadius:6,
+      barThickness:12
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    scales:{ x:{beginAtZero:true} },
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#fff',
+        titleColor:'#000',
+        bodyColor:'#000',
+        borderColor:'#ccc',
+        borderWidth:1
+      },
+      datalabels:{
+        anchor:'end',
+        align:'end',
+        color:'#333',
+        font:{weight:'bold'},
+        formatter:v=>v
+      }
+    },
+    responsive:true,
+    maintainAspectRatio:false
+  },
+  plugins:[ChartDataLabels]
+});
+
+// Cards
+const container = document.getElementById('teamsContainer');
+sortedTeams.forEach((team, idx) => {
+  const collapseId = `collapseTeam${idx}`;
+  const card = document.createElement('div');
+  card.className = 'accordion-item shadow-sm';
+  card.innerHTML = `
+    <h2 class="accordion-header" id="heading${idx}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
+        <div class="d-flex justify-content-between w-100">
+          <span>${team.name}</span>
+          <div class="text-end">
+			  <span class="badge bg-success">Total: ${team.total}</span><br/>
+			  <small class="text-muted">Avg: ${team.avg} / member</small>
+			</div>
+        </div>
+      </button>
+    </h2>
+    <div id="${collapseId}" class="accordion-collapse collapse" aria-labelledby="heading${idx}" data-bs-parent="#teamsContainer">
+      <div class="accordion-body">
+        <ul class="list-group list-group-flush">
+          ${team.members.map(m=>`
+            <li class="list-group-item d-flex justify-content-between">
+              ${m.name}
+              <span class="badge bg-info text-dark">${m.smile_contribution}</span>
+            </li>`).join('')}
+        </ul>
+      </div>
+    </div>`;
+  container.appendChild(card);
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
