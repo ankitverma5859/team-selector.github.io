@@ -264,9 +264,10 @@ new Chart(ctxTeams, {
       borderRadius: 6
     }]
   },
-  options: {
+options: {
     indexAxis: 'y',
     scales: { x: { beginAtZero: true } },
+
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -290,6 +291,8 @@ new Chart(ctxTeams, {
     responsive: true,
     maintainAspectRatio: false
   },
+  
+
   plugins: [ChartDataLabels]
 });
 
@@ -307,7 +310,15 @@ const ctxMembers = document.getElementById('membersChart').getContext('2d');
 new Chart(ctxMembers, {
   type: 'bar',
   data: {
-    labels: allMembers.map(m => m.name + " (" + m.team + ")"),
+    //labels: allMembers.map(m => m.name + " (" + m.team + ")"),
+	labels: allMembers.map((m, i) => {
+	  let medal = "";
+	  if (i === 0) medal = " 🥇";
+	  else if (i === 1) medal = " 🥈";
+	  else if (i === 2) medal = " 🥉";
+	  return `${medal} ${m.name} (${m.team})`;
+	}),
+
     datasets: [{
       label: 'Smile Contribution',
       data: allMembers.map(m => m.contribution),
@@ -347,12 +358,17 @@ sortedTeams.forEach((team, idx) => {
   const collapseId = `collapseTeam${idx}`;
   const card = document.createElement('div');
   card.className = 'accordion-item shadow-sm';
+	let medal = "";
+	if (idx === 0) medal = " 🥇";
+	else if (idx === 1) medal = " 🥈";
+	else if (idx === 2) medal = " 🥉";
   const deltaText = team.delta > 0 ? ` <span style="color:yellow;">(+${team.delta})</span>` : '';
   card.innerHTML = `
     <h2 class="accordion-header" id="heading${idx}">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
         <div class="d-flex justify-content-between w-100">
-          <span>${team.name}</span>
+          <span>${medal} ${team.name}</span>
+
           <div class="text-end">
             <span class="badge bg-success">Total: ${team.total}${deltaText}</span><br/>
             <small class="text-muted">Avg: ${team.avg} / member</small>
