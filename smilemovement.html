@@ -310,7 +310,7 @@ new Chart(ctxMembers, {
 	  if (i === 0) medal = " 🥇";
 	  else if (i === 1) medal = " 🥈";
 	  else if (i === 2) medal = " 🥉";
-	  return `${medal} ${m.name} (${m.team})`;
+	  return `${i + 1}. ${medal} ${m.name} (${m.team})`;
 	}),
 
     datasets: [{
