@@ -4,35 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scrum Team Selector</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         html, body {
             height: 100%;
-            overflow-y: scroll; 
+            overflow-y: scroll;
         }
-
         body {
-            margin: 0; 
-        }
+            margin: 0;
+            /* Background image and subtle white overlay for lightness */
+            background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('navratri.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
 
-        .list-group {
-            overflow-y: hidden; 
-        }
-
-        body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             height: 100vh;
             display: flex;
             flex-direction: column;
         }
-
+        .list-group {
+            overflow-y: hidden;
+        }
         .container {
             flex: 1;
-            margin-bottom: 120px; 
+            margin-bottom: 120px;
+            border-radius: 8px;
+            padding: 20px;
+            
         }
-
+        /* Hiding the main heading */
+        .hidden-heading {
+            display: none;
+        }
+        h4 {
+            color: #333; /* Darker color for headings */
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.9); /* Subtle shadow for contrast */
+        }
+        p {
+            color: #1a1a1a; /* Darker text for readability */
+        }
         #generateButton {
             position: fixed;
             bottom: 20px;
@@ -40,45 +53,68 @@
             transform: translateX(-50%);
             z-index: 1000;
         }
-
         #timer {
             font-size: 1.2rem;
             font-weight: bold;
             text-align: center;
             margin: 10px 0;
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.8);
             padding: 10px;
             border-radius: 5px;
-            border: 2px solid #007bff;
-            color: #007bff;
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+            /* Yellow/Gold theme */
+            border: 2px solid #ffc400;
+            color: #ffc400;
+            box-shadow: 0 0 10px rgba(255, 196, 0, 0.4);
         }
-
         #resetButton {
             position: absolute;
             top: 20px;
             right: 20px;
         }
-
+        /* Custom yellow button style */
+        .btn-navratri-yellow {
+            color: #333;
+            background-color: #ffd700;
+            border-color: #ccaa00;
+            transition: background-color 0.3s ease;
+        }
+        .btn-navratri-yellow:hover {
+            color: #333;
+            background-color: #ffc400;
+            border-color: #b38f00;
+        }
+        /* Primary button (Choose Scrum Team) changed to yellow theme */
+        .btn-primary {
+            color: #333;
+            background-color: #ffd700;
+            border-color: #ccaa00;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            color: #333;
+            background-color: #ffc400;
+            border-color: #b38f00;
+        }
+        /* End of custom button style */
         #currentTeam {
             animation: glow 2s infinite alternate;
+            background: rgba(255, 255, 255, 0.8);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
-
         .team-presenting {
             display: flex;
             flex-direction: column;
-            height: 400px; 
+            height: 400px; /* Reverted to original height */
             border-radius: 5px;
+            /* PUSHED DOWN BY 100PX */
+            margin-top: 100px;
         }
-
         .slide-out {
             animation: slideOut 1s forwards;
         }
-
         .slide-in {
             animation: slideIn 1s forwards;
         }
-
         @keyframes slideOut {
             from {
                 transform: translateX(0);
@@ -88,116 +124,106 @@
                 opacity: 0;
             }
         }
-
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
-                opacity: 0;
             }
             to {
                 transform: translateX(0);
                 opacity: 1;
             }
         }
-
+        /* Changed glow color to yellow/gold */
         @keyframes glow {
             from {
-                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+                box-shadow: 0 0 5px rgba(255, 196, 0, 0.5);
             }
             to {
-                box-shadow: 0 0 15px rgba(0, 123, 255, 1);
+                box-shadow: 0 0 15px rgba(255, 196, 0, 1);
             }
         }
-
         .time {
             font-size: 0.9rem;
             font-weight: bold;
         }
-
         .date {
             font-size: 1rem;
             text-align: center;
-            margin-top: -15px;
-            margin-bottom: 10px;
-            color: #6c757d;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            color: #444;
         }
-
         .custom-padding {
-            padding: 8px 10px; 
+            padding: 8px 10px;
             margin-bottom: 6px;
-            background-color: #ffffff; 
-            border-radius: 4px; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); 
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
             font-size: 1rem;
             font-weight: 500;
         }
-
         .custom-padding:hover {
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12); 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
             transform: translateY(-6px);
         }
-
         .host-name {
-            color: blue; 
-            margin-left: 10px; 
+            color: #8B4513; /* Dark brown/saddle brown for contrast against light yellow theme */
+            margin-left: 10px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.9);
         }
-
     </style>
 </head>
 <body>
-    <!-- Reset Button -->
-    <button id="resetButton" class="btn btn-danger" onclick="resetAll()">Reset</button>
-    <!-- Today's Host -->
-    
-
+    <button id="resetButton" class="btn btn-navratri-yellow" onclick="window.location.href='smilemovement.html'">Smile Movement</button>
 
     <div class="container py-5">
-        <h1 class="text-center mb-2">Scrum Team Selector</h1>
+        <h1 class="text-center mb-2">Scrum Team Selector</h1> <!-- hidden-heading -->
         <p class="date" id="currentDate"></p>
-        <p id="todaysHost" class="d-flex justify-content-end"></p>
-        <div class="row" style="margin-top: 50px;">
-            <!-- First Column: All Teams -->
+
+        <p id="weeklyHost1" class="d-flex justify-content-end"></p>
+        <p id="weeklyHost2" class="d-flex justify-content-end"></p>
+        
+        <div class="row" style="margin-top: 10px;">
+            
             <div class="col-12 col-md-4">
                 <h4 class="text-center">Teams to Present</h4>
                 <ul id="allTeams" class="list-group">
                     <li class="list-group-item custom-padding">[ST-0] Scrum Team 0</li>
                     <li class="list-group-item custom-padding">[ST-1] Scrum Team 1</li>
+                    <li class="list-group-item custom-padding">[ST-3] Team Dolphin</li>
                     <li class="list-group-item custom-padding">[ST-5] Team SiAB</li>
                     <li class="list-group-item custom-padding">[ST-7] Team Owls</li>
                     <li class="list-group-item custom-padding">[ST-8] Team Eagle</li>
-                    <li class="list-group-item custom-padding">[ST-9] Team Hawks</li>
                 </ul>
             </div>
-            <!-- Second Column: Team Presenting -->
+            
             <div class="col-12 col-md-4">
                 <h4 class="text-center">Team Presenting</h4>
                 <div class="team-presenting">
                     <p id="currentTeam" class="text-center p-3 border rounded bg-light mt-3">
-                        
                     </p>
                     <div id="timer">Timer: <span id="elapsedTime">0m 0s</span></div>
                 </div>
             </div>
-            <!-- Third Column: Teams Presented -->
+            
             <div class="col-12 col-md-4">
                 <h4 class="text-center">Teams Presented</h4>
                 <ul id="chosenTeams" class="list-group">
-                    <!-- Presented teams will be displayed here -->
-                </ul>
+                    </ul>
             </div>
         </div>
     </div>
-    <!-- Fixed Choose Button -->
+    
     <button id="generateButton" class="btn btn-primary" onclick="generateRandomTeam()">Choose Scrum Team</button>
 
     <script>
         const teams = [
             { number: 0, name: '[ST-0] Scrum Team 0' },
             { number: 1, name: '[ST-1] Scrum Team 1' },
+            { number: 9, name: '[ST-3] Team Dolphin' },
             { number: 5, name: '[ST-5] Team SiAB' },
             { number: 7, name: '[ST-7] Team Owls' },
             { number: 8, name: '[ST-8] Team Eagle' },
-            { number: 9, name: '[ST-9] Team Hawks' }
         ];
         const usedTeams = [];
         let currentTeam = null;
@@ -207,28 +233,21 @@
         function setDate() {
             const date = new Date();
             const options = {
-                weekday: 'long', // This will include the full name of the day (e.g., "Sunday")
+                weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             };
-            
-            // Get the formatted date
             let formattedDate = date.toLocaleDateString('en-US', options);
 
-            // Now let's format the day to include "st", "nd", "rd", or "th" based on the day of the month
             const day = date.getDate();
             const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
-                          (day % 10 === 2 && day !== 12) ? 'nd' :
-                          (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
-            
-            // Replace the day number with the day number and its suffix
+                (day % 10 === 2 && day !== 12) ? 'nd' :
+                (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
             formattedDate = formattedDate.replace(day, `${day}${suffix}`);
 
-            // Set the formatted date to the page
             document.getElementById('currentDate').innerText = formattedDate;
         }
-
 
         function startTimer() {
             clearInterval(timerInterval);
@@ -242,16 +261,12 @@
                 document.getElementById('elapsedTime').innerText = `${minutes}m ${seconds}s`;
             }, 1000);
         }
-
         function stopTimer() {
             clearInterval(timerInterval);
         }
 
-
-        let teamInfinityAdded = false; 
-
+        let teamInfinityAdded = false;
         function generateRandomTeam() {
-
             if (currentTeam) {
                 const endTime = new Date();
                 const duration = Math.floor((endTime - startTime) / 1000);
@@ -268,40 +283,30 @@
                 chosenTeamsList.appendChild(listItem);
 
             }
-
-            if(teams.length === 0 && !teamInfinityAdded)
-            {
+            if (teams.length === 0 && !teamInfinityAdded) {
                 document.getElementById('generateButton').innerText = 'End';
             }
-
-            if(teams.length === 0 && teamInfinityAdded)
-            {
+            if (teams.length === 0 && teamInfinityAdded) {
                 document.getElementById('currentTeam').innerText = 'We are done with updates!';
                 document.getElementById('generateButton').innerText = 'End';
                 document.getElementById('generateButton').disabled = true;
                 stopTimer()
                 return;
             }
-
-            // If there are no teams left, add Team 100 once
             if (teams.length === 0 && !teamInfinityAdded) {
                 teams.push({ number: 30, name: '[ST-100] Team Infinity' });
-                teamInfinityAdded = true; 
+                teamInfinityAdded = true;
             }
-
-            // Randomly pick a team from the list
             const randomIndex = Math.floor(Math.random() * teams.length);
             currentTeam = teams.splice(randomIndex, 1)[0];
             startTimer();
 
-            // Display the current team and animate the display
             const currentTeamDisplay = document.getElementById('currentTeam');
             currentTeamDisplay.classList.remove('slide-in', 'slide-out');
-            currentTeamDisplay.offsetWidth; // Trigger reflow for animation
+            currentTeamDisplay.offsetWidth;
             currentTeamDisplay.classList.add('slide-in');
             currentTeamDisplay.innerText = currentTeam.name;
 
-            // Remove the selected team from the "All Teams" list
             const allTeamsList = document.getElementById('allTeams');
             const items = allTeamsList.getElementsByTagName('li');
             for (let i = 0; i < items.length; i++) {
@@ -313,67 +318,54 @@
             }
         }
 
-
         function resetAll() {
             location.reload();
         }
-
         setDate();
 
-
-        function getRandomItemForToday(list) {
+        function getWeeklyHost(list) {
             if (!Array.isArray(list) || list.length === 0) {
                 throw new Error("The list must be a non-empty array.");
             }
+            const now = new Date();
+            let date = new Date(now);
 
-            // Get the current date in YYYY-MM-DD format
-            const today = new Date().toISOString().split('T')[0];
+            const dayOfWeek = date.getDay();
+            const daysToSubtract = (dayOfWeek === 6) ? 0 : dayOfWeek + 1;
 
-            // Use a hash function to convert the date string into a consistent "random" seed
-            const seed = today.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            date.setDate(date.getDate() - daysToSubtract);
 
-            // Generate a pseudo-random index based on the seed and list length
-            const index = Math.abs(Math.sin(seed) * list.length) % list.length;
+            const weekStart = date.toISOString().split('T')[0];
 
-            return list[Math.floor(index)];
+            const seed = weekStart.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+
+            const index1 = Math.floor(Math.abs(Math.sin(seed) * list.length)) % list.length;
+            const selectedHost1 = list[index1];
+
+            let index2 = Math.floor(Math.abs(Math.cos(seed) * list.length)) % list.length;
+            if (index2 === index1) {
+                index2 = (index1 + 1) % list.length;
+            }
+            const selectedHost2 = list[index2];
+
+            return { hostMaster: selectedHost1, hostStandby: selectedHost2 };
         }
 
         const hosts = [
-                        'Amit Pandey', 
-                        'Anusha R P', 
-                        'Arjun Ramendra', 
-                        'Balaji Kapu', 
-                        'Chethan M',
-                        'Deekshith Medikurthi',
-                        'Jaipal Salapu',
-                        'Kanchan Bharti',
-                        'Karanraj R J',
-                        'Karthik Ravishankar',
-                        'Kavya Bhat',
-                        'Madan M R',
-                        'Manish N',
-                        'Manoj Rajput',
-                        'Paras Kadam',
-                        'Prakriti Shetty',
-                        'Rajayogi JR',
-                        'Rohan DV',
-                        'Sneha Kumari',
-                        'Sreeram Ravishankar',
-                        'Sushmitha Sharma'
-                    ];
+            'Pankaj', 'Anil', 'Manoj', 'Rohan', 'Sneha', 'Bhoomi', 'Kanchan', 'Rohit',
+            'Jaipal', 'Chethan', 'Sreeram', 'Purushothama', 'Paras', 'Arjun', 'Amit',
+            'Harsith', 'Sushmitha', 'Deekshith', 'Prakriti', 'Karan', 'Srilakshmi',
+            'Sheel', 'Madan', 'Kavya', 'Manish', 'Anusha'
+        ];
 
         function setHost() {
-            const selectedHost = getRandomItemForToday(hosts);
+            const weeklyHosts = getWeeklyHost(hosts);
 
-            document.getElementById('todaysHost').innerHTML = `Today's Host: <span class="host-name"><strong>${selectedHost}</strong></span>`;
-
+            document.getElementById('weeklyHost1').innerHTML = `Host Master : <span class="host-name"><strong>${weeklyHosts.hostMaster}</strong></span>`;
+            document.getElementById('weeklyHost2').innerHTML = `Host Standby: <span class="host-name"><strong>${weeklyHosts.hostStandby}</strong></span>`;
         }
-
         setHost();
-
-        
-
     </script>
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</
+</body>
+</html>
