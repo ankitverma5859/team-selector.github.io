@@ -180,9 +180,14 @@
         <h1 class="text-center mb-2">Scrum Team Selector</h1> <!-- hidden-heading -->
         <p class="date" id="currentDate"></p>
 
+<!--
+        <p id="weeklyHost1" class="text-center"></p>
+        <p id="weeklyHost2" class="text-center"></p>
+        -->
+    
         <p id="weeklyHost1" class="d-flex justify-content-end"></p>
-        <p id="weeklyHost2" class="d-flex justify-content-end"></p>
-        
+        <p id="weeklyHost2" style="margin-top: -15px;" class="d-flex justify-content-end"></p>
+            
         <div class="row" style="margin-top: 10px;">
             
             <div class="col-12 col-md-4">
@@ -323,6 +328,76 @@
         }
         setDate();
 
+        /**
+         * Selects two unique hosts (Master and Standby) for the week 
+         * from a rotational queue, ensuring a host isn't repeated 
+         * until all hosts have been selected.
+         */
+        function getRotationalHosts(allHosts) {
+            const STORAGE_KEY = 'hostRotationQueue';
+            const PRESENT_HOST_KEY = 'currentWeekHosts';
+
+            // 1. Get or initialize the queue
+            let queue = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            
+            // Check if the saved queue is empty or invalid (e.g., if new people were added/removed)
+            if (!queue || queue.length === 0 || queue.length !== allHosts.length) {
+                // Initialize/Reset the queue: start with a full, randomized list
+                queue = [...allHosts];
+                // Shuffle the array (Fisher-Yates shuffle)
+                for (let i = queue.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [queue[i], queue[j]] = [queue[j], queue[i]];
+                }
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+            }
+
+            // 2. Get the host selection based on the current week's rotation
+            
+            // Determine the start date of the current week (e.g., Sunday)
+            const now = new Date();
+            const dayOfWeek = now.getDay(); // 0 for Sunday, 1 for Monday
+            const daysSinceSunday = dayOfWeek;
+            const weekStart = new Date(now.setDate(now.getDate() - daysSinceSunday)).toISOString().split('T')[0];
+
+            // Check if hosts for this week are already stored
+            let currentHosts = JSON.parse(localStorage.getItem(PRESENT_HOST_KEY));
+
+            if (currentHosts && currentHosts.weekStart === weekStart) {
+                // Hosts have already been selected this week, return them
+                return { hostMaster: currentHosts.master, hostStandby: currentHosts.standby };
+            }
+
+            // 3. Select the hosts from the front of the queue
+            
+            // Select Master Host
+            const hostMaster = queue.shift();
+            
+            // If the queue is now empty, it means we must reset it for the next selection
+            if (queue.length === 0) {
+                // Reset the queue for the next cycle, making sure the Master Host is added back
+                queue = allHosts.filter(name => name !== hostMaster);
+                // Reshuffle the new queue
+                for (let i = queue.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [queue[i], queue[j]] = [queue[j], queue[i]];
+                }
+            }
+            
+            // Select Standby Host from the current or newly reset queue
+            const hostStandby = queue.shift();
+            
+            // 4. Save the new state
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+            
+            // Save the selected hosts for this week to maintain consistency until next week
+            currentHosts = { master: hostMaster, standby: hostStandby, weekStart: weekStart };
+            localStorage.setItem(PRESENT_HOST_KEY, JSON.stringify(currentHosts));
+
+            return { hostMaster: hostMaster, hostStandby: hostStandby };
+        }
+
+
         function getWeeklyHost(list) {
             if (!Array.isArray(list) || list.length === 0) {
                 throw new Error("The list must be a non-empty array.");
@@ -353,17 +428,31 @@
 
         const hosts = [
             'Pankaj', 'Anil', 'Manoj', 'Rohan', 'Sneha', 'Bhoomi', 'Kanchan', 'Rohit',
-            'Jaipal', 'Chethan', 'Sreeram', 'Purushothama', 'Paras', 'Arjun', 'Amit',
+            'Jaipal', 'Chethan', 'Sreeram', 'Purush', 'Paras', 'Arjun', 'Amit',
             'Harsith', 'Sushmitha', 'Deekshith', 'Prakriti', 'Karan', 'Srilakshmi',
-            'Sheel', 'Madan', 'Kavya', 'Manish', 'Anusha'
+            'Sheel', 'Madan', 'Kavya', 'Manish', 'Chirag', 'Karthik', 'Anupriya', 
+            'Madhu', 'Pooja', 'Sharmistha', 'Aneesh'
         ];
 
-        function setHost() {
-            const weeklyHosts = getWeeklyHost(hosts);
+        /* 'Anusha' */
 
-            document.getElementById('weeklyHost1').innerHTML = `Host Master : <span class="host-name"><strong>${weeklyHosts.hostMaster}</strong></span>`;
-            document.getElementById('weeklyHost2').innerHTML = `Host Standby: <span class="host-name"><strong>${weeklyHosts.hostStandby}</strong></span>`;
+        function setHost() {
+            // Pass the hosts array to the new function
+            // Assuming getRotationalHosts(hosts) returns { hostMaster: 'Name1', hostStandby: 'Name2' }
+            const { hostMaster, hostStandby } = getRotationalHosts(hosts);
+
+            // Update the display for the Host Master using the correct ID
+            document.getElementById('weeklyHost1').innerHTML = `
+                Host Master: <span class="host-name"><strong>${hostMaster}</strong></span>
+            `;
+
+            // Update the display for the Host Standby using the correct ID
+            document.getElementById('weeklyHost2').innerHTML = `
+                Host Standby: <span class="host-name"><strong>${hostStandby}</strong></span>
+            `;
         }
+
+        // Ensure the setHost() call remains at the end of your script
         setHost();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
