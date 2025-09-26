@@ -40,7 +40,7 @@ const data = [
   {
     "team-name": "ST5 Phoenix",
     "members": [
-      { "name": "Sunil", "smile_contribution": [450, 450, 450, 480, 480, 630, 920, 945] },
+      { "name": "Sunil", "smile_contribution": [30, 30, 50, 55, 65, 100, 100, 150] },
       { "name": "Bhoomi", "smile_contribution": [115, 120, 135, 145, 145, 160, 0, 0] },
       { "name": "Rajyogi", "smile_contribution": [220, 255, 295, 310, 345, 485, 550, 575] },
       { "name": "Pankaj", "smile_contribution": [220, 280, 310, 345, 400, 460, 625, 740] },
