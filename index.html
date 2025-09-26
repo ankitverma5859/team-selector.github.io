@@ -398,7 +398,7 @@
 
             return { hostMaster: hostMaster, hostStandby: hostStandby };
         }
-        */
+        
 
         function getWeeklyHost(list) {
             if (!Array.isArray(list) || list.length === 0) {
@@ -435,9 +435,9 @@
             'Sheel', 'Madan', 'Kavya', 'Manish', 'Chirag', 'Karthik', 'Anupriya', 
             'Madhu', 'Pooja', 'Sharmistha', 'Aneesh'
         ];
-
+*/
         /* 'Anusha' */
-
+/*
         function setHost() {
             // Pass the hosts array to the new function
             // Assuming getRotationalHosts(hosts) returns { hostMaster: 'Name1', hostStandby: 'Name2' }
@@ -456,6 +456,53 @@
 
         // Ensure the setHost() call remains at the end of your script
         setHost();
+        */
+        function getGlobalWeeklyHost(list) {
+            if (!Array.isArray(list) || list.length === 0) {
+                throw new Error("The list must be a non-empty array.");
+            }
+        
+            // Get ISO week start (Monday)
+            const now = new Date();
+            const dayOfWeek = now.getUTCDay(); // 0 = Sunday
+            const diff = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek; 
+            const monday = new Date(now);
+            monday.setUTCDate(now.getUTCDate() + diff);
+            const weekStart = monday.toISOString().split('T')[0]; // YYYY-MM-DD
+        
+            // Use weekStart string as seed
+            const seed = weekStart.split('')
+                .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        
+            // Deterministic selection using trig functions
+            const index1 = Math.floor(Math.abs(Math.sin(seed)) * list.length) % list.length;
+            const hostMaster = list[index1];
+        
+            let index2 = Math.floor(Math.abs(Math.cos(seed)) * list.length) % list.length;
+            if (index2 === index1) {
+                index2 = (index1 + 1) % list.length;
+            }
+            const hostStandby = list[index2];
+        
+            return { hostMaster, hostStandby, weekStart };
+        }
+    
+        function setHost() {
+            const { hostMaster, hostStandby, weekStart } = getGlobalWeeklyHost(hosts);
+        
+            document.getElementById('weeklyHost1').innerHTML = `
+                Host Master: <span class="host-name"><strong>${hostMaster}</strong></span>
+            `;
+        
+            document.getElementById('weeklyHost2').innerHTML = `
+                Host Standby: <span class="host-name"><strong>${hostStandby}</strong></span>
+            `;
+        
+            console.log("Week start:", weekStart);
+        }
+        
+        setHost();
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
