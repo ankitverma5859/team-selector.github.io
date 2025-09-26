@@ -328,11 +328,13 @@
         }
         setDate();
 
+        
         /**
          * Selects two unique hosts (Master and Standby) for the week 
          * from a rotational queue, ensuring a host isn't repeated 
          * until all hosts have been selected.
          */
+        /*
         function getRotationalHosts(allHosts) {
             const STORAGE_KEY = 'hostRotationQueue';
             const PRESENT_HOST_KEY = 'currentWeekHosts';
@@ -396,7 +398,7 @@
 
             return { hostMaster: hostMaster, hostStandby: hostStandby };
         }
-
+        */
 
         function getWeeklyHost(list) {
             if (!Array.isArray(list) || list.length === 0) {
