@@ -288,7 +288,7 @@ body {
 }
 
 .leaderboard-panel .chart-container canvas {
-  min-height: 1200px !important;
+  min-height: 790px !important;
 }
 
 /* Teams Panel - Compact Design */
