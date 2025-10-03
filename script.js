@@ -7,86 +7,86 @@ const data = [
   {
     "team-name": "ST0 Beaver",
     "members": [
-      { "name": "Anil", "smile_contribution": [450, 450, 450, 480, 480, 630, 920, 945] },
-      { "name": "Arjun", "smile_contribution": [70, 70, 70, 70, 320, 330, 115, 115] },
-      { "name": "Anusha", "smile_contribution": [130, 130, 130, 130, 130, 130, 100, 100] },
-      { "name": "Aneesh", "smile_contribution": [110, 110, 135, 170, 170, 195, 145, 145] },
-      { "name": "Bala", "smile_contribution": [700, 800, 800, 925, 1015, 1050, 1575, 1680] },
-      { "name": "Kanchan", "smile_contribution": [150, 150, 150, 150, 150, 150, 25, 25] },
-      { "name": "Madan", "smile_contribution": [110, 110, 155, 170, 215, 315, 360, 360] },
-      { "name": "Madhu", "smile_contribution": [60, 60, 60, 60, 80, 180, 345, 345] },
-      { "name": "Mahesh", "smile_contribution": [115, 185, 185, 220, 295, 295, 625, 625] },
-      { "name": "Karthik", "smile_contribution": [170, 205, 235, 235, 285, 410, 410, 410] }
+      { "name": "Anil", "smile_contribution": [450, 450, 450, 480, 480, 630, 920, 945, 945] },
+      { "name": "Arjun", "smile_contribution": [70, 70, 70, 70, 320, 330, 115, 115, 115] },
+      { "name": "Anusha", "smile_contribution": [130, 130, 130, 130, 130, 130, 100, 100, 100] },
+      { "name": "Aneesh", "smile_contribution": [110, 110, 135, 170, 170, 195, 145, 145, 145] },
+      { "name": "Bala", "smile_contribution": [700, 800, 800, 925, 1015, 1050, 1575, 1680, 1705] },
+      { "name": "Kanchan", "smile_contribution": [150, 150, 150, 150, 150, 150, 25, 25, 25] },
+      { "name": "Madan", "smile_contribution": [110, 110, 155, 170, 215, 315, 360, 360, 360] },
+      { "name": "Madhu", "smile_contribution": [60, 60, 60, 60, 80, 180, 345, 345, 345] },
+      { "name": "Mahesh", "smile_contribution": [115, 185, 185, 220, 295, 295, 625, 625, 625] },
+      { "name": "Karthik", "smile_contribution": [170, 205, 235, 235, 285, 410, 410, 410, 520] }
     ]
   },
   {
     "team-name": "ST11 Octopus",
      "members": [
-      { "name": "Jaipal", "smile_contribution": [0, 0, 0, 20, 20, 20, 30, 65] }
+      { "name": "Jaipal", "smile_contribution": [0, 0, 0, 20, 20, 20, 30, 65, 65] }
       ]     
   },
   {
     "team-name": "ST3 Dolphin",
     "members": [
-      { "name": "Harsha", "smile_contribution": [145, 145, 145, 170, 170, 295, 90, 90] },
-      { "name": "Sharmistha", "smile_contribution": [60, 70, 95, 95, 95, 110, 115, 115] },
-      { "name": "Sreeram", "smile_contribution": [150, 215, 280, 335, 335, 360, 430, 490] },
-      { "name": "Kavya", "smile_contribution": [125, 125, 135, 135, 135, 135, 150, 200] },
-      { "name": "Karan", "smile_contribution": [125, 125, 125, 205, 305, 340, 390, 390] },
-      { "name": "Kavitha", "smile_contribution": [10, 60, 80, 90, 120, 170, 245, 245] },
-      { "name": "Sheel", "smile_contribution": [85, 95, 95, 105, 105, 105, 165, 165] }
+      { "name": "Harsha", "smile_contribution": [145, 145, 145, 170, 170, 295, 90, 90, 120] },
+      { "name": "Sharmistha", "smile_contribution": [60, 70, 95, 95, 95, 110, 115, 115, 115] },
+      { "name": "Sreeram", "smile_contribution": [150, 215, 280, 335, 335, 360, 430, 490, 540] },
+      { "name": "Kavya", "smile_contribution": [125, 125, 135, 135, 135, 135, 150, 200, 200] },
+      { "name": "Karan", "smile_contribution": [125, 125, 125, 205, 305, 340, 390, 390, 390] },
+      { "name": "Kavitha", "smile_contribution": [10, 60, 80, 90, 120, 170, 245, 245, 295] },
+      { "name": "Sheel", "smile_contribution": [85, 95, 95, 105, 105, 105, 165, 165, 165] }
     ]
   },
   {
     "team-name": "ST5 Phoenix",
     "members": [
-      { "name": "Sunil", "smile_contribution": [30, 30, 50, 55, 65, 100, 100, 150] },
-      { "name": "Bhoomi", "smile_contribution": [115, 120, 135, 145, 145, 160, 0, 0] },
-      { "name": "Rajyogi", "smile_contribution": [220, 255, 295, 310, 345, 485, 550, 575] },
-      { "name": "Pankaj", "smile_contribution": [220, 280, 310, 345, 400, 460, 625, 740] },
-      { "name": "Deeksith", "smile_contribution": [20, 20, 55, 55, 55, 80, 10, 10] },
-      { "name": "Purush", "smile_contribution": [75, 75, 90, 120, 120, 155, 200, 200] },
-      { "name": "Sneha", "smile_contribution": [25, 25, 25, 30, 30, 45, 25, 55] }
+      { "name": "Sunil", "smile_contribution": [30, 30, 50, 55, 65, 100, 100, 150, 150] },
+      { "name": "Bhoomi", "smile_contribution": [115, 120, 135, 145, 145, 160, 0, 0, 0] },
+      { "name": "Rajyogi", "smile_contribution": [220, 255, 295, 310, 345, 485, 550, 575, 595] },
+      { "name": "Pankaj", "smile_contribution": [220, 280, 310, 345, 400, 460, 625, 740, 755] },
+      { "name": "Deeksith", "smile_contribution": [20, 20, 55, 55, 55, 80, 10, 10, 10] },
+      { "name": "Purush", "smile_contribution": [75, 75, 90, 120, 120, 155, 200, 200, 230] },
+      { "name": "Sneha", "smile_contribution": [25, 25, 25, 30, 30, 45, 25, 55, 130] }
     ]
   },
   {
     "team-name": "ST7 Owl",
     "members": [
-      { "name": "Anand", "smile_contribution": [165, 165, 165, 225, 320, 445, 760, 870] },
-      { "name": "Ankit", "smile_contribution": [655, 755, 775, 825, 925, 975, 1285, 1390] },
-      { "name": "Paras", "smile_contribution": [310, 345, 390, 405, 440, 590, 695, 695] },
-      { "name": "Manish", "smile_contribution": [55, 55, 85, 145, 170, 310, 440, 440] },
-      { "name": "Amit", "smile_contribution": [285, 340, 375, 390, 410, 600, 800, 825] },
-      { "name": "Anupriya", "smile_contribution": [10, 10, 45, 70, 70, 115, 185, 195] }
+      { "name": "Anand", "smile_contribution": [165, 165, 165, 225, 320, 445, 760, 870, 920] },
+      { "name": "Ankit", "smile_contribution": [655, 755, 775, 825, 925, 975, 1285, 1390, 1390] },
+      { "name": "Paras", "smile_contribution": [310, 345, 390, 405, 440, 590, 695, 695, 720] },
+      { "name": "Manish", "smile_contribution": [55, 55, 85, 145, 170, 310, 440, 440, 440] },
+      { "name": "Amit", "smile_contribution": [285, 340, 375, 390, 410, 600, 800, 825, 825] },
+      { "name": "Anupriya", "smile_contribution": [10, 10, 45, 70, 70, 115, 185, 195, 195] }
     ]
   },
   {
     "team-name": "ST8 Eagle",
     "members": [
-      { "name": "Natesh", "smile_contribution": [60, 70, 70, 70, 70, 70, 0, 0] },
-      { "name": "Rohan", "smile_contribution": [265, 265, 290, 315, 315, 330, 455, 455] },
-      { "name": "Kishore", "smile_contribution": [240, 240, 290, 300, 315, 325, 385, 405] },
-      { "name": "Chethan", "smile_contribution": [195, 195, 195, 225, 225, 225, 120, 170] },
-      { "name": "Sushmitha", "smile_contribution": [120, 130, 165, 200, 260, 295, 230, 230] },
-      { "name": "Harsith", "smile_contribution": [280, 280, 280, 280, 285, 360, 460, 655] },
-      { "name": "Prakriti", "smile_contribution": [375, 460, 470, 580, 610, 665, 840, 875] },
-      { "name": "Sreelaxmi", "smile_contribution": [85, 85, 85, 120, 255, 285, 385, 385] }
+      { "name": "Natesh", "smile_contribution": [60, 70, 70, 70, 70, 70, 0, 0, 0] },
+      { "name": "Rohan", "smile_contribution": [265, 265, 290, 315, 315, 330, 455, 455, 505] },
+      { "name": "Kishore", "smile_contribution": [240, 240, 290, 300, 315, 325, 385, 405, 405] },
+      { "name": "Chethan", "smile_contribution": [195, 195, 195, 225, 225, 225, 120, 170, 290] },
+      { "name": "Sushmitha", "smile_contribution": [120, 130, 165, 200, 260, 295, 230, 230, 250] },
+      { "name": "Harsith", "smile_contribution": [280, 280, 280, 280, 285, 360, 460, 655, 990] },
+      { "name": "Prakriti", "smile_contribution": [375, 460, 470, 580, 610, 665, 840, 875, 875] },
+      { "name": "Sreelaxmi", "smile_contribution": [85, 85, 85, 120, 255, 285, 385, 385, 385] }
     ]
   },
   {
     "team-name": "ST100 Infinity",
     "members": [
-      { "name": "Balu", "smile_contribution": [211, 211, 211, 211, 211, 211, 161, 161] },
-      { "name": "Pooja", "smile_contribution": [220, 220, 240, 255, 255, 275, 325, 350] },
-      { "name": "Manju", "smile_contribution": [145, 145, 145, 145, 160, 160, 75, 100] },
-      { "name": "Bala M", "smile_contribution": [245, 245, 245, 285, 410, 420, 210, 210] },
-      { "name": "Asha", "smile_contribution": [140, 140, 170, 180, 180, 205, 315, 340] }
+      { "name": "Balu", "smile_contribution": [211, 211, 211, 211, 211, 211, 161, 161, 161] },
+      { "name": "Pooja", "smile_contribution": [220, 220, 240, 255, 255, 275, 325, 350, 360] },
+      { "name": "Manju", "smile_contribution": [145, 145, 145, 145, 160, 160, 75, 100, 235] },
+      { "name": "Bala M", "smile_contribution": [245, 245, 245, 285, 410, 420, 210, 210, 210] },
+      { "name": "Asha", "smile_contribution": [140, 140, 170, 180, 180, 205, 315, 340, 340] }
     ]
   },
   {
     "team-name": "Inactive Members",
     "members": [
-      { "name": "Balaji", "smile_contribution": [35, 35, 35, 35, 35, 35] }
+      { "name": "Balaji", "smile_contribution": [35, 35, 35, 35, 35, 35, 35] }
     ]
   }
 ];
