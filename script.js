@@ -11,7 +11,7 @@ const data = [
       { "name": "Arjun", "smile_contribution": [70, 70, 70, 70, 320, 330, 115, 115, 115] },
       { "name": "Anusha", "smile_contribution": [130, 130, 130, 130, 130, 130, 100, 100, 100] },
       { "name": "Aneesh", "smile_contribution": [110, 110, 135, 170, 170, 195, 145, 145, 145] },
-      { "name": "Bala", "smile_contribution": [700, 800, 800, 925, 1015, 1050, 1575, 1680, 1705] },
+      { "name": "Bala", "smile_contribution": [700, 800, 800, 925, 1015, 1050, 1575, 1680, 1843] },
       { "name": "Kanchan", "smile_contribution": [150, 150, 150, 150, 150, 150, 25, 25, 25] },
       { "name": "Madan", "smile_contribution": [110, 110, 155, 170, 215, 315, 360, 360, 360] },
       { "name": "Madhu", "smile_contribution": [60, 60, 60, 60, 80, 180, 345, 345, 345] },
