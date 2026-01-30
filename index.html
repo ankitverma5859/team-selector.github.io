@@ -408,7 +408,6 @@
         const teams = [
             { number: 0, name: '[ST-404] Scrum Team NOT FOUND?' },
             { number: 1, name: '[ST-1] Scrum Team CCPS' },
-            { number: 11, name: '[ST-11] Scrum Team Chairside' },
             { number: 9, name: '[ST-3] Team Dolphin' },
             { number: 5, name: '[ST-5] Team SiAB' },
             { number: 7, name: '[ST-7] Team Owls' },
@@ -425,7 +424,7 @@
             'Jaipal', 'Chethan', 'Sreeram', 'Purush', 'Paras', 'Arjun', 'Amit',
             'Harsith', 'Sushmitha', 'Deekshith', 'Prakriti', 'Karan', 'Srilakshmi',
             'Sheel', 'Madan', 'Kavya', 'Manish', 'Chirag', 'Karthik', 'Anupriya', 
-            'Madhu', 'Pooja', 'Sharmistha', 'Aneesh'
+            'Madhu', 'Pooja', 'Sharmistha', 'Aneesh', 'Rahul', 'Abhishek'
         ];
 
         function setDate() {
@@ -476,10 +475,10 @@
 
         function setHost() {
             const { hostMaster, hostStandby } = getGlobalWeeklyHost(hosts);
-            document.getElementById('hostMaster').innerText = hostMaster;
-            document.getElementById('hostStandby').innerText = hostStandby;
-            //document.getElementById('hostMaster').innerText = "Aayush";
-            //document.getElementById('hostStandby').innerText = "Naveen";
+            //document.getElementById('hostMaster').innerText = hostMaster;
+            //document.getElementById('hostStandby').innerText = hostStandby;
+            document.getElementById('hostMaster').innerText = "Rahul";
+            document.getElementById('hostStandby').innerText = "Rohan";
         }
 
         function initializeTeamsList() {
