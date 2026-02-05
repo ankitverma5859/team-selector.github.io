@@ -1,587 +1,644 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Scrum Team Selector - Straumann</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-            min-height: 100vh;
-            color: #1d1d1f;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+        min-height: 100vh;
+        color: #1d1d1f;
+        padding: 20px;
+        overflow-x: hidden;
+      }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: fadeIn 0.6s ease-out;
-        }
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        animation: fadeIn 0.6s ease-out;
+      }
 
-        .logo-title {
-            font-size: 32px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            color: #1d1d1f;
-            margin-bottom: 8px;
-        }
+      .logo-title {
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+      }
 
-        .date-display {
-            font-size: 15px;
-            color: #86868b;
-            font-weight: 400;
-            margin-bottom: 24px;
+      .date-display {
+        font-size: 15px;
+        color: #86868b;
+        font-weight: 400;
+        margin-bottom: 24px;
+      }
+
+      .host-container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .host-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border-radius: 16px;
+        padding: 16px 28px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+      }
+
+      .host-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #86868b;
+        margin-bottom: 4px;
+        font-weight: 500;
+      }
+
+      .host-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #005eb8;
+      }
+
+      .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1.2fr 1fr;
+        gap: 24px;
+        margin-bottom: 100px;
+      }
+
+      .column {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .column:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+
+      .column:nth-child(3) {
+        animation-delay: 0.2s;
+      }
+
+      .column-title {
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #86868b;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .team-list {
+        list-style: none;
+      }
+
+      .team-item {
+        background: white;
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 10px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #1d1d1f;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+      }
+
+      .team-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      }
+
+      .presenting-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 320px;
+      }
+
+      .current-team {
+        background: linear-gradient(135deg, #005eb8 0%, #0074d9 100%);
+        color: white;
+        border-radius: 18px;
+        padding: 40px 32px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 600;
+        box-shadow: 0 12px 40px rgba(0, 94, 184, 0.25);
+        width: 100%;
+        min-height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .current-team.active {
+        animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .timer-display {
+        margin-top: 24px;
+        background: white;
+        border-radius: 14px;
+        padding: 20px 32px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        width: 100%;
+      }
+
+      .timer-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #86868b;
+        margin-bottom: 6px;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      .timer-time {
+        font-size: 32px;
+        font-weight: 600;
+        color: #1d1d1f;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .presented-item {
+        background: white;
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #1d1d1f;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+      }
+
+      .time-badge {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .time-success {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .time-danger {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .action-button {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #005eb8 0%, #0074d9 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        padding: 18px 48px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 8px 32px rgba(0, 94, 184, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+      }
+
+      .action-button:hover:not(:disabled) {
+        transform: translateX(-50%) translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0, 94, 184, 0.4);
+      }
+
+      .action-button:active:not(:disabled) {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .action-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .nav-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #005eb8;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+      }
+
+      .nav-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(-30px);
+          opacity: 0;
+        }
+      }
+
+      .slide-out {
+        animation: slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      @media (max-width: 968px) {
+        .main-container {
+          grid-template-columns: 1fr;
         }
 
         .host-container {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .host-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: 16px;
-            padding: 16px 28px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-
-        .host-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #86868b;
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-
-        .host-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #005eb8;
-        }
-
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1.2fr 1fr;
-            gap: 24px;
-            margin-bottom: 100px;
+          gap: 16px;
         }
 
         .column {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 28px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            animation: fadeInUp 0.6s ease-out;
+          padding: 20px;
         }
+      }
 
-        .column:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .column:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .column-title {
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #86868b;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .team-list {
-            list-style: none;
-        }
-
-        .team-item {
-            background: white;
-            border-radius: 12px;
-            padding: 16px 18px;
-            margin-bottom: 10px;
-            font-size: 15px;
-            font-weight: 500;
-            color: #1d1d1f;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-        }
-
-        .team-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        }
-
-        .presenting-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 320px;
-        }
-
-        .current-team {
-            background: linear-gradient(135deg, #005eb8 0%, #0074d9 100%);
-            color: white;
-            border-radius: 18px;
-            padding: 40px 32px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 600;
-            box-shadow: 0 12px 40px rgba(0, 94, 184, 0.25);
-            width: 100%;
-            min-height: 140px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .current-team.active {
-            animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .timer-display {
-            margin-top: 24px;
-            background: white;
-            border-radius: 14px;
-            padding: 20px 32px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-            width: 100%;
-        }
-
-        .timer-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #86868b;
-            margin-bottom: 6px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .timer-time {
-            font-size: 32px;
-            font-weight: 600;
-            color: #1d1d1f;
-            text-align: center;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .presented-item {
-            background: white;
-            border-radius: 12px;
-            padding: 16px 18px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #1d1d1f;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-        }
-
-        .time-badge {
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .time-success {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .time-danger {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .action-button {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #005eb8 0%, #0074d9 100%);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            padding: 18px 48px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0, 94, 184, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-        }
-
-        .action-button:hover:not(:disabled) {
-            transform: translateX(-50%) translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 94, 184, 0.4);
-        }
-
-        .action-button:active:not(:disabled) {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .action-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .nav-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 12px;
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #005eb8;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-        }
-
-        .nav-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes scaleIn {
-            from {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(-30px);
-                opacity: 0;
-            }
-        }
-
-        .slide-out {
-            animation: slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @media (max-width: 968px) {
-            .main-container {
-                grid-template-columns: 1fr;
-            }
-
-            .host-container {
-                gap: 16px;
-            }
-
-            .column {
-                padding: 20px;
-            }
-        }
-
-        .empty-state {
-            text-align: center;
-            color: #86868b;
-            font-size: 14px;
-            padding: 40px 20px;
-        }
+      .empty-state {
+        text-align: center;
+        color: #86868b;
+        font-size: 14px;
+        padding: 40px 20px;
+      }
+      .nextWeekKt {
+        filter: blur(6px);
+      }
     </style>
-</head>
-<body>
-    <button class="nav-button" onclick="window.location.href='smilemovement.html'">Smile Movement</button>
+  </head>
+  <body>
+    <button
+      class="nav-button"
+      onclick="window.location.href = 'smilemovement.html'"
+    >
+      Smile Movement
+    </button>
 
     <div class="header">
-        <div class="logo-title">Scrum Team Selector</div>
-        <div class="date-display" id="currentDate"></div>
-        <div class="host-container">
-            <div class="host-card">
-                <div class="host-label">Host Master</div>
-                <div class="host-name" id="hostMaster"></div>
-            </div>
-            <div class="host-card">
-                <div class="host-label">Host Standby</div>
-                <div class="host-name" id="hostStandby"></div>
-            </div>
+      <div class="logo-title">Scrum Team Selector</div>
+      <div class="date-display" id="currentDate"></div>
+      <div class="host-container">
+        <div class="host-card">
+          <div class="host-label">Host Master</div>
+          <div class="host-name" id="hostMaster"></div>
         </div>
+        <div class="host-card">
+          <div class="host-label">Host Standby</div>
+          <div class="host-name" id="hostStandby"></div>
+        </div>
+        <div class="host-card">
+          <div class="host-label">Next week KT</div>
+          <div class="host-name nextWeekKt" id="nextWeekKt">Purushothama</div>
+        </div>
+      </div>
     </div>
 
     <div class="main-container">
-        <div class="column">
-            <div class="column-title">Teams to Present</div>
-            <ul id="allTeams" class="team-list"></ul>
-        </div>
+      <div class="column">
+        <div class="column-title">Teams to Present</div>
+        <ul id="allTeams" class="team-list"></ul>
+      </div>
 
-        <div class="column">
-            <div class="column-title">Currently Presenting</div>
-            <div class="presenting-container">
-                <div id="currentTeam" class="current-team">
-                    Ready to begin
-                </div>
-                <div class="timer-display">
-                    <div class="timer-label">Elapsed Time</div>
-                    <div class="timer-time" id="elapsedTime">0:00</div>
-                </div>
-            </div>
+      <div class="column">
+        <div class="column-title">Currently Presenting</div>
+        <div class="presenting-container">
+          <div id="currentTeam" class="current-team">Ready to begin</div>
+          <div class="timer-display">
+            <div class="timer-label">Elapsed Time</div>
+            <div class="timer-time" id="elapsedTime">0:00</div>
+          </div>
         </div>
+      </div>
 
-        <div class="column">
-            <div class="column-title">Presented</div>
-            <ul id="chosenTeams" class="team-list">
-                <div class="empty-state">No teams yet</div>
-            </ul>
-        </div>
+      <div class="column">
+        <div class="column-title">Presented</div>
+        <ul id="chosenTeams" class="team-list">
+          <div class="empty-state">No teams yet</div>
+        </ul>
+      </div>
     </div>
 
-    <button id="generateButton" class="action-button" onclick="generateRandomTeam()">Choose Team</button>
+    <button
+      id="generateButton"
+      class="action-button"
+      onclick="generateRandomTeam()"
+    >
+      Choose Team
+    </button>
 
     <script>
-        const teams = [
-            { number: 0, name: '[ST-404] Scrum Team NOT FOUND?' },
-            { number: 1, name: '[ST-1] Scrum Team CCPS' },
-            { number: 9, name: '[ST-3] Team Dolphin' },
-            { number: 5, name: '[ST-5] Team SiAB' },
-            { number: 7, name: '[ST-7] Team Owls' },
-            { number: 8, name: '[ST-8] Team Eagle' }
-        ];
-        
-        let currentTeam = null;
-        let startTime = null;
-        let timerInterval = null;
-        let teamInfinityAdded = false;
+      const teams = [
+        { number: 0, name: "[ST-404] Scrum Team NOT FOUND?" },
+        { number: 1, name: "[ST-1] Scrum Team CCPS" },
+        { number: 9, name: "[ST-3] Team Dolphin" },
+        { number: 5, name: "[ST-5] Team SiAB" },
+        { number: 7, name: "[ST-7] Team Owls" },
+        { number: 8, name: "[ST-8] Team Eagle" },
+      ];
 
-        const hosts = [
-            'Pankaj', 'Anil', 'Manoj', 'Rohan', 'Sneha', 'Bhoomi', 'Kanchan', 'Rohit',
-            'Jaipal', 'Chethan', 'Sreeram', 'Purush', 'Paras', 'Arjun', 'Amit',
-            'Harsith', 'Sushmitha', 'Deekshith', 'Prakriti', 'Karan', 'Srilakshmi',
-            'Sheel', 'Madan', 'Kavya', 'Manish', 'Chirag', 'Karthik', 'Anupriya', 
-            'Madhu', 'Pooja', 'Sharmistha', 'Aneesh', 'Rahul', 'Abhishek'
-        ];
+      let currentTeam = null;
+      let startTime = null;
+      let timerInterval = null;
+      let teamInfinityAdded = false;
 
-        function setDate() {
-            const date = new Date();
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-            let formattedDate = date.toLocaleDateString('en-US', options);
+      const hosts = [
+        "Pankaj",
+        "Anil",
+        "Manoj",
+        "Rohan",
+        "Sneha",
+        "Bhoomi",
+        "Kanchan",
+        "Rohit",
+        "Jaipal",
+        "Chethan",
+        "Sreeram",
+        "Purush",
+        "Paras",
+        "Arjun",
+        "Amit",
+        "Harsith",
+        "Sushmitha",
+        "Deekshith",
+        "Prakriti",
+        "Karan",
+        "Srilakshmi",
+        "Sheel",
+        "Madan",
+        "Kavya",
+        "Manish",
+        "Chirag",
+        "Karthik",
+        "Anupriya",
+        "Madhu",
+        "Pooja",
+        "Sharmistha",
+        "Aneesh",
+        "Rahul",
+        "Abhishek",
+      ];
 
-            const day = date.getDate();
-            const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
-                (day % 10 === 2 && day !== 12) ? 'nd' :
-                (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
-            formattedDate = formattedDate.replace(day, `${day}${suffix}`);
+      function setDate() {
+        const date = new Date();
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        let formattedDate = date.toLocaleDateString("en-US", options);
 
-            document.getElementById('currentDate').innerText = formattedDate;
+        const day = date.getDate();
+        const suffix =
+          day % 10 === 1 && day !== 11
+            ? "st"
+            : day % 10 === 2 && day !== 12
+              ? "nd"
+              : day % 10 === 3 && day !== 13
+                ? "rd"
+                : "th";
+        formattedDate = formattedDate.replace(day, `${day}${suffix}`);
+
+        document.getElementById("currentDate").innerText = formattedDate;
+      }
+
+      function getGlobalWeeklyHost(list) {
+        if (!Array.isArray(list) || list.length === 0) {
+          throw new Error("The list must be a non-empty array.");
         }
 
-        function getGlobalWeeklyHost(list) {
-            if (!Array.isArray(list) || list.length === 0) {
-                throw new Error("The list must be a non-empty array.");
-            }
+        const now = new Date();
+        const dayOfWeek = now.getUTCDay();
+        const diff = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
+        const monday = new Date(now);
+        monday.setUTCDate(now.getUTCDate() + diff);
+        const weekStart = monday.toISOString().split("T")[0];
 
-            const now = new Date();
-            const dayOfWeek = now.getUTCDay();
-            const diff = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek; 
-            const monday = new Date(now);
-            monday.setUTCDate(now.getUTCDate() + diff);
-            const weekStart = monday.toISOString().split('T')[0];
+        const seed = weekStart
+          .split("")
+          .reduce((acc, char) => acc + char.charCodeAt(0), 0);
 
-            const seed = weekStart.split('')
-                .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const index1 =
+          Math.floor(Math.abs(Math.sin(seed)) * list.length) % list.length;
+        const hostMaster = list[index1];
 
-            const index1 = Math.floor(Math.abs(Math.sin(seed)) * list.length) % list.length;
-            const hostMaster = list[index1];
-
-            let index2 = Math.floor(Math.abs(Math.cos(seed)) * list.length) % list.length;
-            if (index2 === index1) {
-                index2 = (index1 + 1) % list.length;
-            }
-            const hostStandby = list[index2];
-
-            return { hostMaster, hostStandby, weekStart };
+        let index2 =
+          Math.floor(Math.abs(Math.cos(seed)) * list.length) % list.length;
+        if (index2 === index1) {
+          index2 = (index1 + 1) % list.length;
         }
+        const hostStandby = list[index2];
 
-        function setHost() {
-            const { hostMaster, hostStandby } = getGlobalWeeklyHost(hosts);
-            //document.getElementById('hostMaster').innerText = hostMaster;
-            //document.getElementById('hostStandby').innerText = hostStandby;
-            document.getElementById('hostMaster').innerText = "Rahul";
-            document.getElementById('hostStandby').innerText = "Rohan";
-        }
+        return { hostMaster, hostStandby, weekStart };
+      }
 
-        function initializeTeamsList() {
-            const allTeamsList = document.getElementById('allTeams');
-            teams.forEach(team => {
-                const listItem = document.createElement('li');
-                listItem.className = 'team-item';
-                listItem.innerText = team.name;
-                listItem.dataset.teamName = team.name;
-                allTeamsList.appendChild(listItem);
-            });
-        }
+      function setHost() {
+        const { hostMaster, hostStandby } = getGlobalWeeklyHost(hosts);
+        //document.getElementById('hostMaster').innerText = hostMaster;
+        //document.getElementById('hostStandby').innerText = hostStandby;
+        document.getElementById("hostMaster").innerText = "Rahul";
+        document.getElementById("hostStandby").innerText = "Rohan";
+      }
 
-        function startTimer() {
-            clearInterval(timerInterval);
-            startTime = new Date();
+      function initializeTeamsList() {
+        const allTeamsList = document.getElementById("allTeams");
+        teams.forEach((team) => {
+          const listItem = document.createElement("li");
+          listItem.className = "team-item";
+          listItem.innerText = team.name;
+          listItem.dataset.teamName = team.name;
+          allTeamsList.appendChild(listItem);
+        });
+      }
 
-            timerInterval = setInterval(() => {
-                const now = new Date();
-                const elapsedSeconds = Math.floor((now - startTime) / 1000);
-                const minutes = Math.floor(elapsedSeconds / 60);
-                const seconds = elapsedSeconds % 60;
-                document.getElementById('elapsedTime').innerText = 
-                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            }, 1000);
-        }
+      function startTimer() {
+        clearInterval(timerInterval);
+        startTime = new Date();
 
-        function stopTimer() {
-            clearInterval(timerInterval);
-        }
+        timerInterval = setInterval(() => {
+          const now = new Date();
+          const elapsedSeconds = Math.floor((now - startTime) / 1000);
+          const minutes = Math.floor(elapsedSeconds / 60);
+          const seconds = elapsedSeconds % 60;
+          document.getElementById("elapsedTime").innerText =
+            `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        }, 1000);
+      }
 
-        function generateRandomTeam() {
-            const chosenTeamsList = document.getElementById('chosenTeams');
-            
-            if (currentTeam) {
-                const endTime = new Date();
-                const duration = Math.floor((endTime - startTime) / 1000);
-                const minutes = Math.floor(duration / 60);
-                const seconds = duration % 60;
+      function stopTimer() {
+        clearInterval(timerInterval);
+      }
 
-                const timeDisplay = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                const timeClass = duration < 180 ? 'time-success' : 'time-danger';
+      function generateRandomTeam() {
+        const chosenTeamsList = document.getElementById("chosenTeams");
 
-                if (chosenTeamsList.querySelector('.empty-state')) {
-                    chosenTeamsList.innerHTML = '';
-                }
+        if (currentTeam) {
+          const endTime = new Date();
+          const duration = Math.floor((endTime - startTime) / 1000);
+          const minutes = Math.floor(duration / 60);
+          const seconds = duration % 60;
 
-                const listItem = document.createElement('li');
-                listItem.className = 'presented-item';
-                listItem.innerHTML = `
+          const timeDisplay = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+          const timeClass = duration < 180 ? "time-success" : "time-danger";
+
+          if (chosenTeamsList.querySelector(".empty-state")) {
+            chosenTeamsList.innerHTML = "";
+          }
+
+          const listItem = document.createElement("li");
+          listItem.className = "presented-item";
+          listItem.innerHTML = `
                     <span>${currentTeam.name}</span>
                     <span class="time-badge ${timeClass}">${timeDisplay}</span>
                 `;
-                chosenTeamsList.appendChild(listItem);
-            }
-
-            if (teams.length === 0 && !teamInfinityAdded) {
-                document.getElementById('generateButton').innerText = 'End';
-            }
-
-            if (teams.length === 0 && teamInfinityAdded) {
-                document.getElementById('currentTeam').innerText = 'All updates complete';
-                document.getElementById('generateButton').innerText = 'Complete';
-                document.getElementById('generateButton').disabled = true;
-                stopTimer();
-                return;
-            }
-
-            if (teams.length === 0 && !teamInfinityAdded) {
-                teams.push({ number: 30, name: '[ST-100] Team Infinity' });
-                teamInfinityAdded = true;
-                
-                const allTeamsList = document.getElementById('allTeams');
-                const listItem = document.createElement('li');
-                listItem.className = 'team-item';
-                listItem.innerText = '[ST-100] Team Infinity';
-                listItem.dataset.teamName = '[ST-100] Team Infinity';
-                allTeamsList.appendChild(listItem);
-            }
-
-            const randomIndex = Math.floor(Math.random() * teams.length);
-            currentTeam = teams.splice(randomIndex, 1)[0];
-            startTimer();
-
-            const currentTeamDisplay = document.getElementById('currentTeam');
-            currentTeamDisplay.classList.remove('active');
-            void currentTeamDisplay.offsetWidth;
-            currentTeamDisplay.classList.add('active');
-            currentTeamDisplay.innerText = currentTeam.name;
-
-            const allTeamsList = document.getElementById('allTeams');
-            const items = allTeamsList.querySelectorAll('.team-item');
-            items.forEach(item => {
-                if (item.dataset.teamName === currentTeam.name) {
-                    item.classList.add('slide-out');
-                    setTimeout(() => item.remove(), 300);
-                }
-            });
+          chosenTeamsList.appendChild(listItem);
         }
 
-        setDate();
-        setHost();
-        initializeTeamsList();
+        if (teams.length === 0 && !teamInfinityAdded) {
+          document.getElementById("nextWeekKt").classList.remove("nextWeekKt");
+          document.getElementById("generateButton").innerText = "End";
+        }
+
+        if (teams.length === 0 && teamInfinityAdded) {
+          document.getElementById("currentTeam").innerText =
+            "All updates complete";
+          document.getElementById("generateButton").innerText = "Complete";
+          document.getElementById("generateButton").disabled = true;
+          stopTimer();
+          return;
+        }
+
+        if (teams.length === 0 && !teamInfinityAdded) {
+          teams.push({ number: 30, name: "[ST-100] Team Infinity" });
+          teamInfinityAdded = true;
+
+          const allTeamsList = document.getElementById("allTeams");
+          const listItem = document.createElement("li");
+          listItem.className = "team-item";
+          listItem.innerText = "[ST-100] Team Infinity";
+          listItem.dataset.teamName = "[ST-100] Team Infinity";
+          allTeamsList.appendChild(listItem);
+        }
+
+        const randomIndex = Math.floor(Math.random() * teams.length);
+        currentTeam = teams.splice(randomIndex, 1)[0];
+        startTimer();
+
+        const currentTeamDisplay = document.getElementById("currentTeam");
+        currentTeamDisplay.classList.remove("active");
+        void currentTeamDisplay.offsetWidth;
+        currentTeamDisplay.classList.add("active");
+        currentTeamDisplay.innerText = currentTeam.name;
+
+        const allTeamsList = document.getElementById("allTeams");
+        const items = allTeamsList.querySelectorAll(".team-item");
+        items.forEach((item) => {
+          if (item.dataset.teamName === currentTeam.name) {
+            item.classList.add("slide-out");
+            setTimeout(() => item.remove(), 300);
+          }
+        });
+      }
+
+      setDate();
+      setHost();
+      initializeTeamsList();
     </script>
-</body>
+  </body>
 </html>
