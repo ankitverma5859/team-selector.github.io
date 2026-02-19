@@ -92,6 +92,9 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.9);
         animation: fadeInUp 0.6s ease-out;
+        /* Performance optimization */
+        will-change: transform;
+        transform: translateZ(0);
       }
 
       .column:nth-child(2) {
@@ -125,12 +128,17 @@
         font-weight: 500;
         color: #1d1d1f;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition:
+          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid rgba(0, 0, 0, 0.04);
+        /* Performance optimization */
+        will-change: transform;
+        transform: translateZ(0);
       }
 
       .team-item:hover {
-        transform: translateY(-2px);
+        transform: translateY(-2px) translateZ(0);
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
       }
 
@@ -156,11 +164,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Performance optimization */
+        will-change: transform;
+        transform: translateZ(0);
       }
 
       .current-team.active {
-        animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .timer-display {
@@ -201,8 +212,10 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid rgba(0, 0, 0, 0.04);
+        /* Performance optimization */
+        transform: translateZ(0);
       }
 
       .time-badge {
@@ -227,7 +240,7 @@
         position: fixed;
         bottom: 30px;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translate(-50%, 0) translateZ(0);
         background: linear-gradient(135deg, #005eb8 0%, #0074d9 100%);
         color: white;
         border: none;
@@ -237,17 +250,21 @@
         font-weight: 600;
         cursor: pointer;
         box-shadow: 0 8px 32px rgba(0, 94, 184, 0.3);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition:
+          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1000;
+        /* Performance optimization */
+        will-change: transform;
       }
 
       .action-button:hover:not(:disabled) {
-        transform: translateX(-50%) translateY(-2px);
+        transform: translate(-50%, -2px) translateZ(0);
         box-shadow: 0 12px 40px rgba(0, 94, 184, 0.4);
       }
 
       .action-button:active:not(:disabled) {
-        transform: translateX(-50%) translateY(0);
+        transform: translate(-50%, 0) translateZ(0);
       }
 
       .action-button:disabled {
@@ -269,12 +286,17 @@
         color: #005eb8;
         cursor: pointer;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition:
+          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1000;
+        /* Performance optimization */
+        will-change: transform;
+        transform: translateZ(0);
       }
 
       .nav-button:hover {
-        transform: translateY(-2px);
+        transform: translateY(-2px) translateZ(0);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
       }
 
@@ -302,39 +324,39 @@
 
       @keyframes scaleIn {
         from {
-          transform: scale(0.9);
+          transform: scale(0.95) translateZ(0);
           opacity: 0;
         }
         to {
-          transform: scale(1);
+          transform: scale(1) translateZ(0);
           opacity: 1;
         }
       }
 
       @keyframes slideInRight {
         from {
-          transform: translateX(30px);
+          transform: translateX(20px) translateZ(0);
           opacity: 0;
         }
         to {
-          transform: translateX(0);
+          transform: translateX(0) translateZ(0);
           opacity: 1;
         }
       }
 
       @keyframes slideOut {
         from {
-          transform: translateX(0);
+          transform: translateX(0) translateZ(0);
           opacity: 1;
         }
         to {
-          transform: translateX(-30px);
+          transform: translateX(-20px) translateZ(0);
           opacity: 0;
         }
       }
 
       .slide-out {
-        animation: slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation: slideOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       }
 
       @media (max-width: 968px) {
@@ -357,11 +379,12 @@
         font-size: 14px;
         padding: 40px 20px;
       }
+
       .nextWeekKt {
         filter: blur(6px);
       }
 
-      /* KT Picker Styles */
+      /* KT Picker Styles - Optimized */
       .spin-container {
         margin: 20px auto;
         width: 100%;
@@ -383,7 +406,9 @@
       .reel {
         position: absolute;
         width: 100%;
-        transition: transform 4s cubic-bezier(0.17, 0.67, 0.24, 1.3);
+        /* Performance optimization */
+        will-change: transform;
+        transform: translateZ(0);
       }
 
       .name-item {
@@ -395,7 +420,10 @@
         font-weight: 500;
         color: #1d1d1f;
         filter: blur(8px);
-        transition: filter 0.5s ease;
+        transition: filter 0.4s ease;
+        /* Performance optimization */
+        will-change: filter;
+        transform: translateZ(0);
       }
 
       .name-item.reveal {
@@ -412,7 +440,7 @@
         position: absolute;
         top: -16px;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translate(-50%, 0) translateZ(0);
         font-size: 24px;
         color: #005eb8;
         z-index: 10;
@@ -441,27 +469,43 @@
         font-weight: 600;
         cursor: pointer;
         box-shadow: 0 8px 32px rgba(0, 94, 184, 0.3);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition:
+          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         margin-top: 20px;
         display: none;
+        /* Performance optimization */
+        will-change: transform;
+        transform: translateZ(0);
       }
 
       .kt-button.active {
         display: block;
       }
 
-      .kt-button:hover {
-        transform: translateY(-2px);
+      .kt-button:hover:not(:disabled) {
+        transform: translateY(-2px) translateZ(0);
         box-shadow: 0 12px 40px rgba(0, 94, 184, 0.4);
       }
 
-      .kt-button:active {
-        transform: translateY(0);
+      .kt-button:active:not(:disabled) {
+        transform: translateY(0) translateZ(0);
       }
 
       .kt-button:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+      }
+
+      /* Reduced motion for accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
       }
     </style>
   </head>
@@ -487,7 +531,7 @@
         </div>
         <div class="host-card">
           <div class="host-label">This week KT</div>
-          <div class="host-name" id="nextWeekKt">Purushothama</div>
+          <div class="host-name" id="nextWeekKt">Kishore</div>
         </div>
       </div>
     </div>
@@ -552,9 +596,8 @@
       let ktPickerActive = false;
       let ktPresenterSelected = false;
 
-      // KT Presenter tracking - add names here that have already presented
-      const alreadyPresented = [];
-      // Master list of all KT names
+      // KT Presenter tracking
+      const alreadyPresented = ["Purush", "Kishore"];
       const ktMasterList = [
         "Anil",
         "Arjun",
@@ -631,6 +674,7 @@
         "Abhishek",
       ];
 
+      // Optimize date formatting
       function setDate() {
         const date = new Date();
         const options = {
@@ -652,7 +696,7 @@
                 : "th";
         formattedDate = formattedDate.replace(day, `${day}${suffix}`);
 
-        document.getElementById("currentDate").innerText = formattedDate;
+        document.getElementById("currentDate").textContent = formattedDate;
       }
 
       function getGlobalWeeklyHost(list) {
@@ -689,54 +733,72 @@
         const { hostMaster, hostStandby } = getGlobalWeeklyHost(hosts);
         //document.getElementById('hostMaster').innerText = hostMaster;
         //document.getElementById('hostStandby').innerText = hostStandby;
-        document.getElementById("hostMaster").innerText = "Pooja";
-        document.getElementById("hostStandby").innerText = "Bhoomi";
+        document.getElementById("hostMaster").textContent = "Kavitha";
+        document.getElementById("hostStandby").textContent = "Anil";
       }
 
+      // Use DocumentFragment for better performance
       function initializeTeamsList() {
         const allTeamsList = document.getElementById("allTeams");
+        const fragment = document.createDocumentFragment();
+
         teams.forEach((team) => {
           const listItem = document.createElement("li");
           listItem.className = "team-item";
-          listItem.innerText = team.name;
+          listItem.textContent = team.name;
           listItem.dataset.teamName = team.name;
-          allTeamsList.appendChild(listItem);
+          fragment.appendChild(listItem);
         });
+
+        allTeamsList.appendChild(fragment);
+      }
+
+      // Optimize timer with requestAnimationFrame
+      let animationFrameId = null;
+
+      function updateTimer() {
+        const now = Date.now();
+        const elapsedSeconds = Math.floor((now - startTime) / 1000);
+        const minutes = Math.floor(elapsedSeconds / 60);
+        const seconds = elapsedSeconds % 60;
+        document.getElementById("elapsedTime").textContent =
+          `${minutes}:${seconds.toString().padStart(2, "0")}`;
+
+        animationFrameId = requestAnimationFrame(updateTimer);
       }
 
       function startTimer() {
-        clearInterval(timerInterval);
-        startTime = new Date();
-
-        timerInterval = setInterval(() => {
-          const now = new Date();
-          const elapsedSeconds = Math.floor((now - startTime) / 1000);
-          const minutes = Math.floor(elapsedSeconds / 60);
-          const seconds = elapsedSeconds % 60;
-          document.getElementById("elapsedTime").innerText =
-            `${minutes}:${seconds.toString().padStart(2, "0")}`;
-        }, 1000);
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+        startTime = Date.now();
+        updateTimer();
       }
 
       function stopTimer() {
-        clearInterval(timerInterval);
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
       }
 
-      // KT Picker functions
+      // KT Picker functions - optimized
       function shuffle(a) {
-        return [...a].sort(() => Math.random() - 0.5);
+        const result = [...a];
+        for (let i = result.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [result[i], result[j]] = [result[j], result[i]];
+        }
+        return result;
       }
 
       function buildReel() {
         const reel = document.getElementById("reel");
-        reel.innerHTML = "";
+        const fragment = document.createDocumentFragment();
 
-        // Filter out already presented names from master list
         const availableNames = ktMasterList.filter(
           (name) => !alreadyPresented.includes(name),
         );
-
-        // If all names have been presented, use the full master list
         const namesToUse =
           availableNames.length > 0 ? availableNames : ktMasterList;
 
@@ -746,44 +808,48 @@
         longList.forEach((name) => {
           const div = document.createElement("div");
           div.className = "name-item";
-          div.innerText = name;
-          reel.appendChild(div);
+          div.textContent = name;
+          fragment.appendChild(div);
         });
+
+        reel.innerHTML = "";
+        reel.appendChild(fragment);
       }
 
       function spinKTPicker() {
-        // Disable button during spin
         const ktButton = document.getElementById("ktButton");
         ktButton.disabled = true;
 
-        // Hide current team display and show spin container
-        document.getElementById("currentTeam").style.display = "none";
-        document.getElementById("spinContainer").style.display = "block";
+        const currentTeamDisplay = document.getElementById("currentTeam");
+        const spinContainer = document.getElementById("spinContainer");
+
+        currentTeamDisplay.style.display = "none";
+        spinContainer.style.display = "block";
 
         const reel = document.getElementById("reel");
 
-        // Reset reel position without transition
+        // Reset without transition
         reel.style.transition = "none";
-        reel.style.transform = "translateY(0)";
+        reel.style.transform = "translate3d(0, 0, 0)";
 
-        // Rebuild reel for fresh spin
         buildReel();
 
-        // Force reflow to apply the reset
+        // Force reflow
         void reel.offsetHeight;
 
-        // Re-enable transition
+        // Re-enable transition with hardware acceleration
         reel.style.transition =
           "transform 4s cubic-bezier(0.17, 0.67, 0.24, 1.3)";
 
-        // Small delay to ensure reel is built before animating
         setTimeout(() => {
-          // Reveal all names when spinning starts
-          document.querySelectorAll(".name-item").forEach((el) => {
-            el.classList.add("reveal");
+          // Batch DOM reads and writes
+          const nameItems = reel.querySelectorAll(".name-item");
+          requestAnimationFrame(() => {
+            nameItems.forEach((el) => {
+              el.classList.add("reveal");
+            });
           });
 
-          // Filter out already presented names from master list
           const availableNames = ktMasterList.filter(
             (name) => !alreadyPresented.includes(name),
           );
@@ -796,13 +862,16 @@
           const index = shuffledNames.length * 2;
           const offset = index * 100;
 
-          reel.style.transform = `translateY(-${offset}px)`;
+          // Use translate3d for hardware acceleration
+          reel.style.transform = `translate3d(0, -${offset}px, 0)`;
 
           setTimeout(() => {
-            document.querySelectorAll(".name-item").forEach((el) => {
-              if (el.innerText === winner) {
-                el.classList.add("winner");
-              }
+            requestAnimationFrame(() => {
+              nameItems.forEach((el) => {
+                if (el.textContent === winner) {
+                  el.classList.add("winner");
+                }
+              });
             });
 
             if (typeof confetti !== "undefined") {
@@ -813,22 +882,19 @@
               });
             }
 
-            const currentTeamDisplay = document.getElementById("currentTeam");
             currentTeamDisplay.style.display = "flex";
-            currentTeamDisplay.innerText =
+            currentTeamDisplay.textContent =
               winner + " will present KT next week!";
             currentTeamDisplay.style.background =
               "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)";
 
-            // Hide spin container but keep button
-            document.getElementById("spinContainer").style.display = "none";
+            spinContainer.style.display = "none";
 
-            // Change button to "Select Again"
-            ktButton.innerText = "Select Again";
+            ktButton.textContent = "Select Again";
             ktButton.disabled = false;
 
             ktPresenterSelected = true;
-            document.getElementById("generateButton").innerText = "End";
+            document.getElementById("generateButton").textContent = "End";
             document.getElementById("generateButton").style.display = "block";
           }, 4000);
         }, 100);
@@ -838,7 +904,7 @@
         const chosenTeamsList = document.getElementById("chosenTeams");
 
         if (currentTeam) {
-          const endTime = new Date();
+          const endTime = Date.now();
           const duration = Math.floor((endTime - startTime) / 1000);
           const minutes = Math.floor(duration / 60);
           const seconds = duration % 60;
@@ -853,32 +919,28 @@
           const listItem = document.createElement("li");
           listItem.className = "presented-item";
           listItem.innerHTML = `
-                    <span>${currentTeam.name}</span>
-                    <span class="time-badge ${timeClass}">${timeDisplay}</span>
-                `;
+            <span>${currentTeam.name}</span>
+            <span class="time-badge ${timeClass}">${timeDisplay}</span>
+          `;
           chosenTeamsList.appendChild(listItem);
         }
 
         if (teams.length === 0 && !teamInfinityAdded) {
-          document.getElementById("generateButton").innerText =
+          document.getElementById("generateButton").textContent =
             "Move to KT Selector";
         }
 
         if (teams.length === 0 && teamInfinityAdded && !teamInfinityDone) {
-          // Team Infinity is done, activate KT Picker
           teamInfinityDone = true;
           ktPickerActive = true;
           stopTimer();
 
-          // Hide timer display and main button
           document.getElementById("timerDisplay").style.display = "none";
           document.getElementById("generateButton").style.display = "none";
 
-          // Change column title to KT Presenter Selection
-          document.querySelectorAll(".column-title")[1].innerText =
+          document.querySelectorAll(".column-title")[1].textContent =
             "🎯 KT Presenter Selection";
 
-          // Show KT elements
           document.getElementById("currentTeam").style.display = "none";
           document.getElementById("spinContainer").classList.add("active");
           document.getElementById("ktButton").classList.add("active");
@@ -894,7 +956,7 @@
           const allTeamsList = document.getElementById("allTeams");
           const listItem = document.createElement("li");
           listItem.className = "team-item";
-          listItem.innerText = "[ST-100] Team Infinity";
+          listItem.textContent = "[ST-100] Team Infinity";
           listItem.dataset.teamName = "[ST-100] Team Infinity";
           allTeamsList.appendChild(listItem);
         }
@@ -907,14 +969,14 @@
         currentTeamDisplay.classList.remove("active");
         void currentTeamDisplay.offsetWidth;
         currentTeamDisplay.classList.add("active");
-        currentTeamDisplay.innerText = currentTeam.name;
+        currentTeamDisplay.textContent = currentTeam.name;
 
         const allTeamsList = document.getElementById("allTeams");
         const items = allTeamsList.querySelectorAll(".team-item");
         items.forEach((item) => {
           if (item.dataset.teamName === currentTeam.name) {
             item.classList.add("slide-out");
-            setTimeout(() => item.remove(), 300);
+            setTimeout(() => item.remove(), 250);
           }
         });
       }
@@ -925,16 +987,15 @@
 
       function handleButtonClick() {
         if (ktPresenterSelected) {
-          // End the session
           document.getElementById("generateButton").disabled = true;
-          document.getElementById("generateButton").innerText = "Complete";
+          document.getElementById("generateButton").textContent = "Complete";
           stopTimer();
         } else {
-          // Normal team selection
           generateRandomTeam();
         }
       }
 
+      // Initialize
       setDate();
       setHost();
       initializeTeamsList();
