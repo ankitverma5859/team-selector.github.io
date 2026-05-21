@@ -718,14 +718,14 @@
 
         const index1 =
           Math.floor(Math.abs(Math.sin(seed)) * list.length) % list.length;
-        const hostMaster = (list[index1]+2)%34;
+        const hostMaster = list[(index1+7)%34];
 
         let index2 =
           Math.floor(Math.abs(Math.cos(seed)) * list.length) % list.length;
         if (index2 === index1) {
           index2 = (index1 + 1) % list.length;
         }
-        const hostStandby = (list[index2]+2)%34;
+        const hostStandby = list[(index2+7)%34];
 
         return { hostMaster, hostStandby, weekStart };
       }
