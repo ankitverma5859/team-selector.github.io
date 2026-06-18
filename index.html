@@ -531,7 +531,7 @@
         </div>
         <div class="host-card">
           <div class="host-label">This week KT</div>
-          <div class="host-name" id="nextWeekKt">---</div>
+          <div class="host-name" id="nextWeekKt">Kavitha</div>
         </div>
       </div>
     </div>
@@ -597,7 +597,19 @@
       let ktPresenterSelected = false;
 
       // KT Presenter tracking
-      const alreadyPresented = ["Purush", "Harsith", "Rohan","Anupriya","Abhishek","Kanchan","Paras","Sunil","Sreeram","Madan"];
+      const alreadyPresented = [
+        "Purush",
+        "Harsith",
+        "Rohan",
+        "Anupriya",
+        "Abhishek",
+        "Kanchan",
+        "Paras",
+        "Sunil",
+        "Sreeram",
+        "Madan",
+        "Kavitha",
+      ];
       const ktMasterList = [
         "Anil",
         "Arjun",
@@ -635,7 +647,7 @@
         "Pooja",
         "Abhishek",
         "Rahul",
-        "Suneel"
+        "Suneel",
       ];
 
       const hosts = [
@@ -718,22 +730,22 @@
 
         const index1 =
           Math.floor(Math.abs(Math.sin(seed)) * list.length) % list.length;
-        const hostMaster = list[(index1+7)%34];
+        const hostMaster = list[(index1 + 7) % 34];
 
         let index2 =
           Math.floor(Math.abs(Math.cos(seed)) * list.length) % list.length;
         if (index2 === index1) {
           index2 = (index1 + 1) % list.length;
         }
-        const hostStandby = list[(index2+7)%34];
+        const hostStandby = list[(index2 + 7) % 34];
 
         return { hostMaster, hostStandby, weekStart };
       }
 
       function setHost() {
         const { hostMaster, hostStandby } = getGlobalWeeklyHost(hosts);
-        document.getElementById('hostMaster').innerText = hostMaster;
-        document.getElementById('hostStandby').innerText = hostStandby;
+        document.getElementById("hostMaster").innerText = hostMaster;
+        document.getElementById("hostStandby").innerText = hostStandby;
         //document.getElementById("hostMaster").textContent = "Kanchan";
         //document.getElementById("hostStandby").textContent = "Chirag";
       }
