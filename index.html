@@ -750,23 +750,38 @@
         return { hostMaster, hostStandby, weekStart };
       }
 */
-    function getGlobalWeeklyHost(list, modulo = list.length) {
-      if (!Array.isArray(list) || list.length === 0) {
-        throw new Error("The list must be a non-empty array.");
+      function getGlobalWeeklyHost(list, modulo = list.length) {
+        if (!Array.isArray(list) || list.length === 0) {
+          throw new Error("The list must be a non-empty array.");
+        }
+      
+        const now = new Date();
+      
+        // Get Monday of current week (UTC)
+        const dayOfWeek = now.getUTCDay();
+        const diff = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
+        const monday = new Date(now);
+        monday.setUTCDate(now.getUTCDate() + diff);
+      
+        // Calculate week number of the year (ISO week)
+        const startOfYear = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
+        const daysSinceStart =
+          Math.floor((monday - startOfYear) / (24 * 60 * 60 * 1000));
+      
+        const weekOfYear = Math.floor(daysSinceStart / 7) + 1;
+      
+        const hostMasterIndex = weekOfYear % modulo;
+        const hostStandbyIndex = (weekOfYear + 1) % modulo;
+      
+        const hostMaster = list[hostMasterIndex % list.length];
+        const hostStandby = list[hostStandbyIndex % list.length];
+      
+        return {
+          hostMaster,
+          hostStandby,
+          weekOfYear,
+        };
       }
-    
-      const hostMasterIndex = weekOfYear % modulo;
-      const hostStandbyIndex = (weekOfYear + 1) % modulo;
-    
-      const hostMaster = list[hostMasterIndex % list.length];
-      const hostStandby = list[hostStandbyIndex % list.length];
-    
-      return {
-        hostMaster,
-        hostStandby,
-        weekOfYear,
-      };
-    }
 
       function setHost() {
         const { hostMaster, hostStandby } = getGlobalWeeklyHost(hosts);
