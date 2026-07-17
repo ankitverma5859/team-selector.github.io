@@ -652,40 +652,47 @@
       ];
 
       const hosts = [
-        "Pankaj",
-        "Anil",
-        "Manoj",
-        "Rohan",
-        "Sneha",
-        "Bhoomi",
-        "Kanchan",
-        "Rohit",
-        "Jaipal",
-        "Chethan",
-        "Sreeram",
-        "Purush",
-        "Paras",
-        "Arjun",
-        "Amit",
-        "Harsith",
-        "Sushmitha",
-        "Deekshith",
-        "Prakriti",
-        "Karan",
-        "Srilakshmi",
-        "Sheel",
-        "Madan",
-        "Kavya",
-        "Manish",
-        "Chirag",
-        "Karthik",
-        "Anupriya",
-        "Madhu",
-        "Pooja",
-        "Sharmistha",
-        "Aneesh",
-        "Rahul",
+        "Aayush",
         "Abhishek",
+        "Amit",
+        "Aneesh",
+        "Anil",
+        "Anupriya",
+        "Anusha",
+        "Arjun",
+        "Bala",
+        "Bhoomi",
+        "Chethan",
+        "Chirag",
+        "Deekshith",
+        "Harsha",
+        "Harsith",
+        "Jaipal",
+        "Kanchan",
+        "Karan",
+        "Karthik",
+        "Kavya",
+        "Kishore",
+        "Madan",
+        "Madhu",
+        "Manish",
+        "Manoj",
+        "Naveen",
+        "Pankaj",
+        "Paras",
+        "Pooja",
+        "Prakriti",
+        "Purush",
+        "Rahul",
+        "Rajyogi",
+        "Rohan",
+        "Rohit",
+        "Sheel",
+        "Sharmistha",
+        "Sneha",
+        "Sreeram",
+        "Srilakshmi",
+        "Sushmitha"
       ];
 
       // Optimize date formatting
@@ -713,6 +720,7 @@
         document.getElementById("currentDate").textContent = formattedDate;
       }
 
+      /*
       function getGlobalWeeklyHost(list) {
         if (!Array.isArray(list) || list.length === 0) {
           throw new Error("The list must be a non-empty array.");
@@ -742,13 +750,44 @@
 
         return { hostMaster, hostStandby, weekStart };
       }
+*/
+      function getGlobalWeeklyHost(list, modulo = list.length) {
+        if (!Array.isArray(list) || list.length === 0) {
+          throw new Error("The list must be a non-empty array.");
+        }
+      
+        const now = new Date();
+      
+        // Get Monday of current week (UTC)
+        const dayOfWeek = now.getUTCDay();
+        const diff = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
+        const monday = new Date(now);
+        monday.setUTCDate(now.getUTCDate() + diff);
+      
+        // Calculate week number of the year (ISO week)
+        const startOfYear = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
+        const daysSinceStart =
+          Math.floor((monday - startOfYear) / (24 * 60 * 60 * 1000));
+      
+        const weekOfYear = Math.floor(daysSinceStart / 7) + 1;
+      
+        const hostMasterIndex = weekOfYear % modulo;
+        const hostStandbyIndex = (weekOfYear + 1) % modulo;
+      
+        const hostMaster = list[hostMasterIndex % list.length];
+        const hostStandby = list[hostStandbyIndex % list.length];
+      
+        return {
+          hostMaster,
+          hostStandby,
+          weekOfYear,
+        };
+      }
 
       function setHost() {
         const { hostMaster, hostStandby } = getGlobalWeeklyHost(hosts);
         document.getElementById("hostMaster").innerText = hostMaster;
         document.getElementById("hostStandby").innerText = hostStandby;
-        //document.getElementById("hostMaster").textContent = "Kanchan";
-        //document.getElementById("hostStandby").textContent = "Chirag";
       }
 
       // Use DocumentFragment for better performance
