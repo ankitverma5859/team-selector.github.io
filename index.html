@@ -769,7 +769,7 @@
         const daysSinceStart =
           Math.floor((monday - startOfYear) / (24 * 60 * 60 * 1000));
       
-        const weekOfYear = Math.floor(daysSinceStart / 7) + 1;
+        const weekOfYear = Math.floor(daysSinceStart / 7) + 1 + Math.floor(Math.random() * 10);
       
         const hostMasterIndex = weekOfYear % modulo;
         const hostStandbyIndex = (weekOfYear + 1) % modulo;
