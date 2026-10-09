@@ -507,15 +507,101 @@
           transition-duration: 0.01ms !important;
         }
       }
+
+      .next-week-popover {
+        position: fixed;
+        top: 72px;
+        right: 20px;
+        width: min(260px, calc(100vw - 40px));
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        border-radius: 16px;
+        padding: 18px 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+        z-index: 1001;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px) scale(0.97);
+        transform-origin: top right;
+        transition:
+          opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          visibility 0.2s;
+      }
+
+      .next-week-popover.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+      }
+
+      .popover-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #86868b;
+        margin-bottom: 14px;
+      }
+
+      .popover-row + .popover-row {
+        margin-top: 12px;
+      }
+
+      .popover-close {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        width: 26px;
+        height: 26px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.05);
+        color: #86868b;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+
+      .popover-close:hover {
+        background: rgba(0, 0, 0, 0.1);
+        color: #1d1d1f;
+      }
     </style>
   </head>
+  
   <body>
+
     <button
       class="nav-button"
-      onclick="window.location.href = 'smilemovement.html'"
+      id="nextWeekToggle"
+      aria-expanded="false"
+      aria-controls="nextWeekPopover"
     >
-      Smile Movement
+      Next Week's Hosts
     </button>
+
+    <div
+      class="next-week-popover"
+      id="nextWeekPopover"
+      role="dialog"
+      aria-label="Next week's hosts"
+    >
+      <button class="popover-close" id="nextWeekClose" aria-label="Close">
+        &times;
+      </button>
+      <div class="popover-title">Next Week</div>
+      <div class="popover-row">
+        <div class="host-label">Host Master</div>
+        <div class="host-name" id="nextHostMaster"></div>
+      </div>
+      <div class="popover-row">
+        <div class="host-label">Host Standby</div>
+        <div class="host-name" id="nextHostStandby"></div>
+      </div>
+    </div>
 
     <div class="header">
       <div class="logo-title">Scrum Team Selector</div>
@@ -724,51 +810,21 @@
         document.getElementById("currentDate").textContent = formattedDate;
       }
 
-      /*
-      function getGlobalWeeklyHost(list) {
+      function getGlobalWeeklyHost(list, modulo = list.length, weeksAhead = 0) {
         if (!Array.isArray(list) || list.length === 0) {
           throw new Error("The list must be a non-empty array.");
         }
 
+        // Shift the reference date forward by N weeks, then run the same logic
         const now = new Date();
-        const dayOfWeek = now.getUTCDay();
-        const diff = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
-        const monday = new Date(now);
-        monday.setUTCDate(now.getUTCDate() + diff);
-        const weekStart = monday.toISOString().split("T")[0];
+        now.setUTCDate(now.getUTCDate() + 7 * weeksAhead);
 
-        const seed = weekStart
-          .split("")
-          .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-
-        const index1 =
-          Math.floor(Math.abs(Math.sin(seed)) * list.length) % list.length;
-        const hostMaster = list[(index1 + 7) % 34];
-
-        let index2 =
-          Math.floor(Math.abs(Math.cos(seed)) * list.length) % list.length;
-        if (index2 === index1) {
-          index2 = (index1 + 1) % list.length;
-        }
-        const hostStandby = list[(index2 + 7) % 34];
-
-        return { hostMaster, hostStandby, weekStart };
-      }
-*/
-      function getGlobalWeeklyHost(list, modulo = list.length) {
-        if (!Array.isArray(list) || list.length === 0) {
-          throw new Error("The list must be a non-empty array.");
-        }
-
-        const now = new Date();
-
-        // Get Monday of current week (UTC)
+        // Get Monday of that week (UTC)
         const dayOfWeek = now.getUTCDay();
         const diff = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
         const monday = new Date(now);
         monday.setUTCDate(now.getUTCDate() + diff);
 
-        // Calculate week number of the year (ISO week)
         const startOfYear = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
         const daysSinceStart = Math.floor(
           (monday - startOfYear) / (24 * 60 * 60 * 1000),
@@ -779,21 +835,49 @@
         const hostMasterIndex = weekOfYear % modulo;
         const hostStandbyIndex = (weekOfYear + 10) % modulo;
 
-        const hostMaster = list[hostMasterIndex % list.length];
-        const hostStandby = list[hostStandbyIndex % list.length];
-
         return {
-          hostMaster,
-          hostStandby,
+          hostMaster: list[hostMasterIndex % list.length],
+          hostStandby: list[hostStandbyIndex % list.length],
           weekOfYear,
         };
       }
 
       function setHost() {
-        const { hostMaster, hostStandby } = getGlobalWeeklyHost(hosts);
-        document.getElementById("hostMaster").innerText = hostMaster;
-        document.getElementById("hostStandby").innerText = hostStandby;
+        const current = getGlobalWeeklyHost(hosts);
+        document.getElementById("hostMaster").innerText = current.hostMaster;
+        document.getElementById("hostStandby").innerText = current.hostStandby;
+
+        const next = getGlobalWeeklyHost(hosts, hosts.length, 1);
+        //document.getElementById("nextHostMaster").innerText = next.hostMaster;
+        document.getElementById("nextHostMaster").innerText = "Karthik";
+        document.getElementById("nextHostStandby").innerText = next.hostStandby;
+      }      
+
+      // Next week popover
+      const nextWeekToggle = document.getElementById("nextWeekToggle");
+      const nextWeekPopover = document.getElementById("nextWeekPopover");
+
+      function setNextWeekOpen(open) {
+        nextWeekPopover.classList.toggle("open", open);
+        nextWeekToggle.setAttribute("aria-expanded", open);
       }
+
+      nextWeekToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setNextWeekOpen(!nextWeekPopover.classList.contains("open"));
+      });
+
+      document
+        .getElementById("nextWeekClose")
+        .addEventListener("click", () => setNextWeekOpen(false));
+
+      // Close on outside click or Escape
+      document.addEventListener("click", (e) => {
+        if (!nextWeekPopover.contains(e.target)) setNextWeekOpen(false);
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") setNextWeekOpen(false);
+      });
 
       // Use DocumentFragment for better performance
       function initializeTeamsList() {
