@@ -212,7 +212,7 @@ const soy=new Date(Date.UTC(now.getUTCFullYear(),0,1));
 const days=Math.floor((monday-soy)/864e5);const w=Math.floor(days/7)+5;
 return{hostMaster:list[(w%modulo)%list.length],hostStandby:list[((w+10)%modulo)%list.length],weekOfYear:w}}
 function setHost(){const c=getGlobalWeeklyHost(hosts);$("hostMaster").innerText=c.hostMaster;$("hostStandby").innerText=c.hostStandby;
-const n=getGlobalWeeklyHost(hosts,hosts.length,1);$("nextHostMaster").innerText=n.hostMaster;$("nextHostStandby").innerText=n.hostStandby}
+const n=getGlobalWeeklyHost(hosts,hosts.length,1);$("nextHostMaster").innerText="Karthik";$("nextHostStandby").innerText=n.hostStandby}
 const tog=$("nextWeekToggle"),pop=$("nextWeekPopover");
 function setOpen(o){pop.classList.toggle("open",o);tog.setAttribute("aria-expanded",o)}
 tog.addEventListener("click",e=>{e.stopPropagation();setOpen(!pop.classList.contains("open"))});
