@@ -1,1146 +1,266 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scrum Team Selector - Straumann</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-        min-height: 100vh;
-        color: #1d1d1f;
-        padding: 20px;
-        overflow-x: hidden;
-      }
-
-      .header {
-        text-align: center;
-        margin-bottom: 40px;
-        animation: fadeIn 0.6s ease-out;
-      }
-
-      .logo-title {
-        font-size: 32px;
-        font-weight: 600;
-        letter-spacing: -0.5px;
-        color: #1d1d1f;
-        margin-bottom: 8px;
-      }
-
-      .date-display {
-        font-size: 15px;
-        color: #86868b;
-        font-weight: 400;
-        margin-bottom: 24px;
-      }
-
-      .host-container {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-      }
-
-      .host-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(20px);
-        border-radius: 16px;
-        padding: 16px 28px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-      }
-
-      .host-label {
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        color: #86868b;
-        margin-bottom: 4px;
-        font-weight: 500;
-      }
-
-      .host-name {
-        font-size: 18px;
-        font-weight: 600;
-        color: #005eb8;
-      }
-
-      .main-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 1fr 1.2fr 1fr;
-        gap: 24px;
-        margin-bottom: 100px;
-      }
-
-      .column {
-        background: rgba(255, 255, 255, 0.6);
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 28px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.9);
-        animation: fadeInUp 0.6s ease-out;
-        /* Performance optimization */
-        will-change: transform;
-        transform: translateZ(0);
-      }
-
-      .column:nth-child(2) {
-        animation-delay: 0.1s;
-      }
-
-      .column:nth-child(3) {
-        animation-delay: 0.2s;
-      }
-
-      .column-title {
-        font-size: 14px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #86868b;
-        margin-bottom: 20px;
-        text-align: center;
-      }
-
-      .team-list {
-        list-style: none;
-      }
-
-      .team-item {
-        background: white;
-        border-radius: 12px;
-        padding: 16px 18px;
-        margin-bottom: 10px;
-        font-size: 15px;
-        font-weight: 500;
-        color: #1d1d1f;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        transition:
-          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(0, 0, 0, 0.04);
-        /* Performance optimization */
-        will-change: transform;
-        transform: translateZ(0);
-      }
-
-      .team-item:hover {
-        transform: translateY(-2px) translateZ(0);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-      }
-
-      .presenting-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 320px;
-      }
-
-      .current-team {
-        background: linear-gradient(135deg, #005eb8 0%, #0074d9 100%);
-        color: white;
-        border-radius: 18px;
-        padding: 40px 32px;
-        text-align: center;
-        font-size: 20px;
-        font-weight: 600;
-        box-shadow: 0 12px 40px rgba(0, 94, 184, 0.25);
-        width: 100%;
-        min-height: 140px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        /* Performance optimization */
-        will-change: transform;
-        transform: translateZ(0);
-      }
-
-      .current-team.active {
-        animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .timer-display {
-        margin-top: 24px;
-        background: white;
-        border-radius: 14px;
-        padding: 20px 32px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-        width: 100%;
-      }
-
-      .timer-label {
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        color: #86868b;
-        margin-bottom: 6px;
-        font-weight: 500;
-        text-align: center;
-      }
-
-      .timer-time {
-        font-size: 32px;
-        font-weight: 600;
-        color: #1d1d1f;
-        text-align: center;
-        font-variant-numeric: tabular-nums;
-      }
-
-      .presented-item {
-        background: white;
-        border-radius: 12px;
-        padding: 16px 18px;
-        margin-bottom: 10px;
-        font-size: 14px;
-        color: #1d1d1f;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(0, 0, 0, 0.04);
-        /* Performance optimization */
-        transform: translateZ(0);
-      }
-
-      .time-badge {
-        font-size: 12px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 8px;
-        font-variant-numeric: tabular-nums;
-      }
-
-      .time-success {
-        background: #d4edda;
-        color: #155724;
-      }
-
-      .time-danger {
-        background: #f8d7da;
-        color: #721c24;
-      }
-
-      .action-button {
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translate(-50%, 0) translateZ(0);
-        background: linear-gradient(135deg, #005eb8 0%, #0074d9 100%);
-        color: white;
-        border: none;
-        border-radius: 14px;
-        padding: 18px 48px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 8px 32px rgba(0, 94, 184, 0.3);
-        transition:
-          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1000;
-        /* Performance optimization */
-        will-change: transform;
-      }
-
-      .action-button:hover:not(:disabled) {
-        transform: translate(-50%, -2px) translateZ(0);
-        box-shadow: 0 12px 40px rgba(0, 94, 184, 0.4);
-      }
-
-      .action-button:active:not(:disabled) {
-        transform: translate(-50%, 0) translateZ(0);
-      }
-
-      .action-button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      .nav-button {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        border-radius: 12px;
-        padding: 12px 24px;
-        font-size: 14px;
-        font-weight: 500;
-        color: #005eb8;
-        cursor: pointer;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        transition:
-          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1000;
-        /* Performance optimization */
-        will-change: transform;
-        transform: translateZ(0);
-      }
-
-      .nav-button:hover {
-        transform: translateY(-2px) translateZ(0);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes scaleIn {
-        from {
-          transform: scale(0.95) translateZ(0);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1) translateZ(0);
-          opacity: 1;
-        }
-      }
-
-      @keyframes slideInRight {
-        from {
-          transform: translateX(20px) translateZ(0);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0) translateZ(0);
-          opacity: 1;
-        }
-      }
-
-      @keyframes slideOut {
-        from {
-          transform: translateX(0) translateZ(0);
-          opacity: 1;
-        }
-        to {
-          transform: translateX(-20px) translateZ(0);
-          opacity: 0;
-        }
-      }
-
-      .slide-out {
-        animation: slideOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-      }
-
-      @media (max-width: 968px) {
-        .main-container {
-          grid-template-columns: 1fr;
-        }
-
-        .host-container {
-          gap: 16px;
-        }
-
-        .column {
-          padding: 20px;
-        }
-      }
-
-      .empty-state {
-        text-align: center;
-        color: #86868b;
-        font-size: 14px;
-        padding: 40px 20px;
-      }
-
-      .nextWeekKt {
-        filter: blur(6px);
-      }
-
-      /* KT Picker Styles - Optimized */
-      .spin-container {
-        margin: 20px auto;
-        width: 100%;
-        max-width: 350px;
-        height: 100px;
-        overflow: hidden;
-        border-radius: 12px;
-        border: 3px solid #005eb8;
-        box-shadow: 0 0 30px rgba(0, 94, 184, 0.3);
-        position: relative;
-        background: #f5f7fa;
-        display: none;
-      }
-
-      .spin-container.active {
-        display: block;
-      }
-
-      .reel {
-        position: absolute;
-        width: 100%;
-        /* Performance optimization */
-        will-change: transform;
-        transform: translateZ(0);
-      }
-
-      .name-item {
-        height: 100px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        font-weight: 500;
-        color: #1d1d1f;
-        filter: blur(8px);
-        transition: filter 0.4s ease;
-        /* Performance optimization */
-        will-change: filter;
-        transform: translateZ(0);
-      }
-
-      .name-item.reveal {
-        filter: blur(0px);
-      }
-
-      .name-item.winner {
-        color: #22c55e;
-        font-weight: 600;
-        filter: blur(0px);
-      }
-
-      .pointer {
-        position: absolute;
-        top: -16px;
-        left: 50%;
-        transform: translate(-50%, 0) translateZ(0);
-        font-size: 24px;
-        color: #005eb8;
-        z-index: 10;
-      }
-
-      .kt-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: #1d1d1f;
-        text-align: center;
-        margin-bottom: 16px;
-        display: none;
-      }
-
-      .kt-title.active {
-        display: block;
-      }
-
-      .kt-button {
-        background: linear-gradient(135deg, #005eb8 0%, #0074d9 100%);
-        color: white;
-        border: none;
-        border-radius: 14px;
-        padding: 16px 40px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 8px 32px rgba(0, 94, 184, 0.3);
-        transition:
-          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        margin-top: 20px;
-        display: none;
-        /* Performance optimization */
-        will-change: transform;
-        transform: translateZ(0);
-      }
-
-      .kt-button.active {
-        display: block;
-      }
-
-      .kt-button:hover:not(:disabled) {
-        transform: translateY(-2px) translateZ(0);
-        box-shadow: 0 12px 40px rgba(0, 94, 184, 0.4);
-      }
-
-      .kt-button:active:not(:disabled) {
-        transform: translateY(0) translateZ(0);
-      }
-
-      .kt-button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      /* Reduced motion for accessibility */
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
-      }
-
-      .next-week-popover {
-        position: fixed;
-        top: 72px;
-        right: 20px;
-        width: min(260px, calc(100vw - 40px));
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.9);
-        border-radius: 16px;
-        padding: 18px 20px;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
-        z-index: 1001;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-8px) scale(0.97);
-        transform-origin: top right;
-        transition:
-          opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-          visibility 0.2s;
-      }
-
-      .next-week-popover.open {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0) scale(1);
-      }
-
-      .popover-title {
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #86868b;
-        margin-bottom: 14px;
-      }
-
-      .popover-row + .popover-row {
-        margin-top: 12px;
-      }
-
-      .popover-close {
-        position: absolute;
-        top: 10px;
-        right: 12px;
-        width: 26px;
-        height: 26px;
-        border: none;
-        border-radius: 50%;
-        background: rgba(0, 0, 0, 0.05);
-        color: #86868b;
-        font-size: 18px;
-        line-height: 1;
-        cursor: pointer;
-        transition: background 0.2s, color 0.2s;
-      }
-
-      .popover-close:hover {
-        background: rgba(0, 0, 0, 0.1);
-        color: #1d1d1f;
-      }
-    </style>
-  </head>
-  
-  <body>
-
-    <button
-      class="nav-button"
-      id="nextWeekToggle"
-      aria-expanded="false"
-      aria-controls="nextWeekPopover"
-    >
-      Next Week's Hosts
-    </button>
-
-    <div
-      class="next-week-popover"
-      id="nextWeekPopover"
-      role="dialog"
-      aria-label="Next week's hosts"
-    >
-      <button class="popover-close" id="nextWeekClose" aria-label="Close">
-        &times;
-      </button>
-      <div class="popover-title">Next Week</div>
-      <div class="popover-row">
-        <div class="host-label">Host Master</div>
-        <div class="host-name" id="nextHostMaster"></div>
-      </div>
-      <div class="popover-row">
-        <div class="host-label">Host Standby</div>
-        <div class="host-name" id="nextHostStandby"></div>
-      </div>
-    </div>
-
-    <div class="header">
-      <div class="logo-title">Scrum Team Selector</div>
-      <div class="date-display" id="currentDate"></div>
-      <div class="host-container">
-        <div class="host-card">
-          <div class="host-label">Host Master</div>
-          <div class="host-name" id="hostMaster"></div>
-        </div>
-        <div class="host-card">
-          <div class="host-label">Host Standby</div>
-          <div class="host-name" id="hostStandby"></div>
-        </div>
-        <div class="host-card">
-          <div class="host-label">This week KT</div>
-          <div class="host-name" id="nextWeekKt">Amit</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="main-container">
-      <div class="column">
-        <div class="column-title">Teams to Present</div>
-        <ul id="allTeams" class="team-list"></ul>
-      </div>
-
-      <div class="column">
-        <div class="column-title">Currently Presenting</div>
-        <div class="presenting-container">
-          <div id="currentTeam" class="current-team">Ready to begin</div>
-          <div class="spin-container" id="spinContainer">
-            <div class="pointer">▼</div>
-            <div id="reel" class="reel"></div>
-          </div>
-          <div class="timer-display" id="timerDisplay">
-            <div class="timer-label">Elapsed Time</div>
-            <div class="timer-time" id="elapsedTime">0:00</div>
-          </div>
-          <button class="kt-button" id="ktButton" onclick="handleKTSelection()">
-            Select Presenter
-          </button>
-        </div>
-      </div>
-
-      <div class="column">
-        <div class="column-title">Presented</div>
-        <ul id="chosenTeams" class="team-list">
-          <div class="empty-state">No teams yet</div>
-        </ul>
-      </div>
-    </div>
-
-    <button
-      id="generateButton"
-      class="action-button"
-      onclick="handleButtonClick()"
-    >
-      Choose Team
-    </button>
-
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <script>
-      const teams = [
-        { number: 0, name: "[ST-404] Scrum Team NOT FOUND?" },
-        { number: 1, name: "[ST-1] Scrum Team CCPS" },
-        { number: 9, name: "[ST-3] Team Dolphin" },
-        { number: 5, name: "[ST-5] Team SiAB" },
-        { number: 7, name: "[ST-7] Team Owls" },
-        { number: 8, name: "[ST-8] Team Eagle" },
-      ];
-
-      let currentTeam = null;
-      let startTime = null;
-      let timerInterval = null;
-      let teamInfinityAdded = false;
-      let teamInfinityDone = false;
-      let ktPickerActive = false;
-      let ktPresenterSelected = false;
-
-      // KT Presenter tracking
-      const alreadyPresented = [
-        "Purush",
-        "Harsith",
-        "Rohan",
-        "Anupriya",
-        "Abhishek",
-        "Kanchan",
-        "Paras",
-        "Sreeram",
-        "Madan",
-        "Kavitha",
-        "Pankaj",
-        "Anand",
-        "Natesh",
-        "Chethan",
-        "Arjun",
-        "Amit"
-      ];
-      const ktMasterList = [
-        "Anil",
-        "Arjun",
-        "Aneesh",
-        "Bala 🏃",
-        "Kanchan",
-        "Madan",
-        "Madhu",
-        "Mahesh",
-        "Karthik",
-        "Jaipal",
-        "Harsha",
-        "Sreeram",
-        "Kavya",
-        "Kavitha",
-        "Sunil",
-        "Rajyogi",
-        "Pankaj",
-        "Deeksith",
-        "Purush",
-        "Sneha",
-        "Anand",
-        "Ankit",
-        "Paras",
-        "Manish",
-        "Amit",
-        "Anupriya",
-        "Natesh",
-        "Rohan",
-        "Kishore",
-        "Chethan",
-        "Sushmitha",
-        "Harsith",
-        "Prakriti",
-        "Pooja",
-        "Abhishek",
-        "Rahul",
-        "Suneel",
-      ];
-
-      const hosts = [
-        "Aayush",
-        "Abhishek",
-        "Amit",
-        "Aneesh",
-        "Anil",
-        "Anupriya",
-        "Anusha",
-        "Arjun",
-        "Bala 🏃",
-        "Bhoomi",
-        "Chethan",
-        "Chirag",
-        "Deekshith",
-        "Harsha",
-        "Harsith",
-        "Jaipal",
-        "Kanchan",
-        "Karan",
-        "Karthik",
-        "Kavya",
-        "Kishore",
-        "Madan",
-        "Madhu",
-        "Manish",
-        "Manoj",
-        "Naveen",
-        "Pankaj",
-        "Paras",
-        "Pooja",
-        "Prakriti",
-        "Purush",
-        "Rahul",
-        "Rajyogi",
-        "Rohan",
-        "Rohit",
-        "Sheel",
-        "Sharmistha",
-        "Sneha",
-        "Sreeram",
-        "Srilakshmi",
-        "Sushmitha",
-      ];
-
-      // Optimize date formatting
-      function setDate() {
-        const date = new Date();
-        const options = {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        };
-        let formattedDate = date.toLocaleDateString("en-US", options);
-
-        const day = date.getDate();
-        const suffix =
-          day % 10 === 1 && day !== 11
-            ? "st"
-            : day % 10 === 2 && day !== 12
-              ? "nd"
-              : day % 10 === 3 && day !== 13
-                ? "rd"
-                : "th";
-        formattedDate = formattedDate.replace(day, `${day}${suffix}`);
-
-        document.getElementById("currentDate").textContent = formattedDate;
-      }
-
-      function getGlobalWeeklyHost(list, modulo = list.length, weeksAhead = 0) {
-        if (!Array.isArray(list) || list.length === 0) {
-          throw new Error("The list must be a non-empty array.");
-        }
-
-        // Shift the reference date forward by N weeks, then run the same logic
-        const now = new Date();
-        now.setUTCDate(now.getUTCDate() + 7 * weeksAhead);
-
-        // Get Monday of that week (UTC)
-        const dayOfWeek = now.getUTCDay();
-        const diff = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
-        const monday = new Date(now);
-        monday.setUTCDate(now.getUTCDate() + diff);
-
-        const startOfYear = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
-        const daysSinceStart = Math.floor(
-          (monday - startOfYear) / (24 * 60 * 60 * 1000),
-        );
-
-        const weekOfYear = Math.floor(daysSinceStart / 7) + 5;
-
-        const hostMasterIndex = weekOfYear % modulo;
-        const hostStandbyIndex = (weekOfYear + 10) % modulo;
-
-        return {
-          hostMaster: list[hostMasterIndex % list.length],
-          hostStandby: list[hostStandbyIndex % list.length],
-          weekOfYear,
-        };
-      }
-
-      function setHost() {
-        const current = getGlobalWeeklyHost(hosts);
-        document.getElementById("hostMaster").innerText = current.hostMaster;
-        document.getElementById("hostStandby").innerText = current.hostStandby;
-
-        const next = getGlobalWeeklyHost(hosts, hosts.length, 1);
-        //document.getElementById("nextHostMaster").innerText = next.hostMaster;
-        document.getElementById("nextHostMaster").innerText = "Karthik";
-        document.getElementById("nextHostStandby").innerText = next.hostStandby;
-      }      
-
-      // Next week popover
-      const nextWeekToggle = document.getElementById("nextWeekToggle");
-      const nextWeekPopover = document.getElementById("nextWeekPopover");
-
-      function setNextWeekOpen(open) {
-        nextWeekPopover.classList.toggle("open", open);
-        nextWeekToggle.setAttribute("aria-expanded", open);
-      }
-
-      nextWeekToggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        setNextWeekOpen(!nextWeekPopover.classList.contains("open"));
-      });
-
-      document
-        .getElementById("nextWeekClose")
-        .addEventListener("click", () => setNextWeekOpen(false));
-
-      // Close on outside click or Escape
-      document.addEventListener("click", (e) => {
-        if (!nextWeekPopover.contains(e.target)) setNextWeekOpen(false);
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") setNextWeekOpen(false);
-      });
-
-      // Use DocumentFragment for better performance
-      function initializeTeamsList() {
-        const allTeamsList = document.getElementById("allTeams");
-        const fragment = document.createDocumentFragment();
-
-        teams.forEach((team) => {
-          const listItem = document.createElement("li");
-          listItem.className = "team-item";
-          listItem.textContent = team.name;
-          listItem.dataset.teamName = team.name;
-          fragment.appendChild(listItem);
-        });
-
-        allTeamsList.appendChild(fragment);
-      }
-
-      // Optimize timer with requestAnimationFrame
-      let animationFrameId = null;
-
-      function updateTimer() {
-        const now = Date.now();
-        const elapsedSeconds = Math.floor((now - startTime) / 1000);
-        const minutes = Math.floor(elapsedSeconds / 60);
-        const seconds = elapsedSeconds % 60;
-        document.getElementById("elapsedTime").textContent =
-          `${minutes}:${seconds.toString().padStart(2, "0")}`;
-
-        animationFrameId = requestAnimationFrame(updateTimer);
-      }
-
-      function startTimer() {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-        }
-        startTime = Date.now();
-        updateTimer();
-      }
-
-      function stopTimer() {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-          animationFrameId = null;
-        }
-      }
-
-      // KT Picker functions - optimized
-      function shuffle(a) {
-        const result = [...a];
-        for (let i = result.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [result[i], result[j]] = [result[j], result[i]];
-        }
-        return result;
-      }
-
-      function buildReel() {
-        const reel = document.getElementById("reel");
-        const fragment = document.createDocumentFragment();
-
-        const availableNames = ktMasterList.filter(
-          (name) => !alreadyPresented.includes(name),
-        );
-        const namesToUse =
-          availableNames.length > 0 ? availableNames : ktMasterList;
-
-        const shuffledNames = shuffle(namesToUse);
-        const longList = [...shuffledNames, ...shuffledNames, ...shuffledNames];
-
-        longList.forEach((name) => {
-          const div = document.createElement("div");
-          div.className = "name-item";
-          div.textContent = name;
-          fragment.appendChild(div);
-        });
-
-        reel.innerHTML = "";
-        reel.appendChild(fragment);
-      }
-
-      function spinKTPicker() {
-        const ktButton = document.getElementById("ktButton");
-        ktButton.disabled = true;
-
-        const currentTeamDisplay = document.getElementById("currentTeam");
-        const spinContainer = document.getElementById("spinContainer");
-
-        currentTeamDisplay.style.display = "none";
-        spinContainer.style.display = "block";
-
-        const reel = document.getElementById("reel");
-
-        // Reset without transition
-        reel.style.transition = "none";
-        reel.style.transform = "translate3d(0, 0, 0)";
-
-        buildReel();
-
-        // Force reflow
-        void reel.offsetHeight;
-
-        // Re-enable transition with hardware acceleration
-        reel.style.transition =
-          "transform 4s cubic-bezier(0.17, 0.67, 0.24, 1.3)";
-
-        setTimeout(() => {
-          // Batch DOM reads and writes
-          const nameItems = reel.querySelectorAll(".name-item");
-          requestAnimationFrame(() => {
-            nameItems.forEach((el) => {
-              el.classList.add("reveal");
-            });
-          });
-
-          const availableNames = ktMasterList.filter(
-            (name) => !alreadyPresented.includes(name),
-          );
-          const namesToUse =
-            availableNames.length > 0 ? availableNames : ktMasterList;
-
-          const shuffledNames = shuffle(namesToUse);
-          const winner = shuffledNames[0];
-
-          const index = shuffledNames.length * 2;
-          const offset = index * 100;
-
-          // Use translate3d for hardware acceleration
-          reel.style.transform = `translate3d(0, -${offset}px, 0)`;
-
-          setTimeout(() => {
-            requestAnimationFrame(() => {
-              nameItems.forEach((el) => {
-                if (el.textContent === winner) {
-                  el.classList.add("winner");
-                }
-              });
-            });
-
-            if (typeof confetti !== "undefined") {
-              confetti({
-                particleCount: 150,
-                spread: 80,
-                origin: { y: 0.6 },
-              });
-            }
-
-            currentTeamDisplay.style.display = "flex";
-            currentTeamDisplay.textContent =
-              winner + " will present KT next week!";
-            currentTeamDisplay.style.background =
-              "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)";
-
-            spinContainer.style.display = "none";
-
-            ktButton.textContent = "Select Again";
-            ktButton.disabled = false;
-
-            ktPresenterSelected = true;
-            document.getElementById("generateButton").textContent = "End";
-            document.getElementById("generateButton").style.display = "block";
-          }, 4000);
-        }, 100);
-      }
-
-      function generateRandomTeam() {
-        const chosenTeamsList = document.getElementById("chosenTeams");
-
-        if (currentTeam) {
-          const endTime = Date.now();
-          const duration = Math.floor((endTime - startTime) / 1000);
-          const minutes = Math.floor(duration / 60);
-          const seconds = duration % 60;
-
-          const timeDisplay = `${minutes}:${seconds.toString().padStart(2, "0")}`;
-          const timeClass = duration < 180 ? "time-success" : "time-danger";
-
-          if (chosenTeamsList.querySelector(".empty-state")) {
-            chosenTeamsList.innerHTML = "";
-          }
-
-          const listItem = document.createElement("li");
-          listItem.className = "presented-item";
-          listItem.innerHTML = `
-            <span>${currentTeam.name}</span>
-            <span class="time-badge ${timeClass}">${timeDisplay}</span>
-          `;
-          chosenTeamsList.appendChild(listItem);
-        }
-
-        if (teams.length === 0 && !teamInfinityAdded) {
-          document.getElementById("generateButton").textContent =
-            "Move to KT Selector";
-        }
-
-        if (teams.length === 0 && teamInfinityAdded && !teamInfinityDone) {
-          teamInfinityDone = true;
-          ktPickerActive = true;
-          stopTimer();
-
-          document.getElementById("timerDisplay").style.display = "none";
-          document.getElementById("generateButton").style.display = "none";
-
-          document.querySelectorAll(".column-title")[1].textContent =
-            "🎯 KT Presenter Selection";
-
-          document.getElementById("currentTeam").style.display = "none";
-          document.getElementById("spinContainer").classList.add("active");
-          document.getElementById("ktButton").classList.add("active");
-
-          buildReel();
-          return;
-        }
-
-        if (teams.length === 0 && !teamInfinityAdded) {
-          teams.push({ number: 30, name: "[ST-100] Team Infinity" });
-          teamInfinityAdded = true;
-
-          const allTeamsList = document.getElementById("allTeams");
-          const listItem = document.createElement("li");
-          listItem.className = "team-item";
-          listItem.textContent = "[ST-100] Team Infinity";
-          listItem.dataset.teamName = "[ST-100] Team Infinity";
-          allTeamsList.appendChild(listItem);
-        }
-
-        const randomIndex = Math.floor(Math.random() * teams.length);
-        currentTeam = teams.splice(randomIndex, 1)[0];
-        startTimer();
-
-        const currentTeamDisplay = document.getElementById("currentTeam");
-        currentTeamDisplay.classList.remove("active");
-        void currentTeamDisplay.offsetWidth;
-        currentTeamDisplay.classList.add("active");
-        currentTeamDisplay.textContent = currentTeam.name;
-
-        const allTeamsList = document.getElementById("allTeams");
-        const items = allTeamsList.querySelectorAll(".team-item");
-        items.forEach((item) => {
-          if (item.dataset.teamName === currentTeam.name) {
-            item.classList.add("slide-out");
-            setTimeout(() => item.remove(), 250);
-          }
-        });
-      }
-
-      function handleKTSelection() {
-        spinKTPicker();
-      }
-
-      function handleButtonClick() {
-        if (ktPresenterSelected) {
-          document.getElementById("generateButton").disabled = true;
-          document.getElementById("generateButton").textContent = "Complete";
-          stopTimer();
-        } else {
-          generateRandomTeam();
-        }
-      }
-
-      // Initialize
-      setDate();
-      setHost();
-      initializeTeamsList();
-    </script>
-  </body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Scrum Team Selector - Straumann</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(135deg,#f5f7fa 0%,#e8ecf1 100%);min-height:100vh;color:#1d1d1f;padding:20px;overflow-x:hidden}
+.header{text-align:center;margin-bottom:40px;animation:fadeIn .6s ease-out}
+.logo-title{font-size:32px;font-weight:600;letter-spacing:-.5px;margin-bottom:8px}
+.date-display{font-size:15px;color:#86868b;margin-bottom:24px}
+.host-container{display:flex;justify-content:center;gap:40px;margin-bottom:20px;flex-wrap:wrap}
+.host-card{background:rgba(255,255,255,.7);backdrop-filter:blur(20px);border-radius:16px;padding:16px 28px;box-shadow:0 4px 20px rgba(0,0,0,.06);border:1px solid rgba(255,255,255,.8)}
+.host-label{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:#86868b;margin-bottom:4px;font-weight:500}
+.host-name{font-size:18px;font-weight:600;color:#005eb8}
+.main-container{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:24px;margin-bottom:100px}
+.column{background:rgba(255,255,255,.6);backdrop-filter:blur(20px);border-radius:20px;padding:28px;box-shadow:0 8px 32px rgba(0,0,0,.08);border:1px solid rgba(255,255,255,.9);animation:fadeInUp .6s ease-out}
+.column-title{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#86868b;margin-bottom:20px;text-align:center}
+.team-list{list-style:none}
+.team-item,.presented-item{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:10px;font-size:15px;font-weight:500;box-shadow:0 2px 8px rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.04);transition:transform .2s,box-shadow .2s}
+.team-item:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.presented-item{font-size:14px;display:flex;justify-content:space-between;align-items:center;animation:slideInRight .3s}
+.presenting-container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px}
+.current-team{background:linear-gradient(135deg,#005eb8,#0074d9);color:#fff;border-radius:18px;padding:40px 32px;text-align:center;font-size:20px;font-weight:600;box-shadow:0 12px 40px rgba(0,94,184,.25);width:100%;min-height:140px;display:flex;align-items:center;justify-content:center}
+.current-team.active{animation:scaleIn .4s}
+.timer-display{margin-top:24px;background:#fff;border-radius:14px;padding:20px 32px;box-shadow:0 4px 16px rgba(0,0,0,.06);width:100%}
+.timer-label{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:#86868b;margin-bottom:6px;font-weight:500;text-align:center}
+.timer-time{font-size:32px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+.time-badge{font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;font-variant-numeric:tabular-nums}
+.time-success{background:#d4edda;color:#155724}.time-danger{background:#f8d7da;color:#721c24}
+.action-button{position:fixed;bottom:calc(30px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#005eb8,#0074d9);color:#fff;border:none;border-radius:14px;padding:18px 48px;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 8px 32px rgba(0,94,184,.3);transition:transform .2s,box-shadow .2s;z-index:1000}
+.action-button:hover:not(:disabled){transform:translate(-50%,-2px);box-shadow:0 12px 40px rgba(0,94,184,.4)}
+.action-button:disabled{opacity:.5;cursor:not-allowed}
+.nav-button{position:fixed;top:28px;right:20px;background:rgba(255,255,255,.7);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.8);border-radius:12px;padding:12px 24px;font-size:14px;font-weight:500;color:#005eb8;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.08);transition:transform .2s,box-shadow .2s;z-index:1000}
+.nav-button:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes scaleIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes slideInRight{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+@keyframes slideOut{from{opacity:1}to{transform:translateX(-20px);opacity:0}}
+.slide-out{animation:slideOut .25s forwards}
+@media(max-width:968px){.main-container{grid-template-columns:1fr}.host-container{gap:16px}.column{padding:20px}.nav-button{top:34px;padding:10px 14px}}
+.empty-state{text-align:center;color:#86868b;font-size:14px;padding:40px 20px}
+.spin-container{margin:20px auto;width:100%;max-width:350px;height:100px;overflow:hidden;border-radius:12px;border:3px solid #005eb8;box-shadow:0 0 30px rgba(0,94,184,.3);position:relative;background:#f5f7fa;display:none}
+.spin-container.active{display:block}
+.reel{position:absolute;width:100%}
+.name-item{height:100px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;filter:blur(8px);transition:filter .4s}
+.name-item.reveal{filter:none}.name-item.winner{color:#22c55e;font-weight:600;filter:none}
+.pointer{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:24px;color:#005eb8;z-index:10}
+.kt-button{background:linear-gradient(135deg,#005eb8,#0074d9);color:#fff;border:none;border-radius:14px;padding:16px 40px;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 8px 32px rgba(0,94,184,.3);margin-top:20px;display:none}
+.kt-button.active{display:block}.kt-button:disabled{opacity:.5;cursor:not-allowed}
+.next-week-popover{position:fixed;top:80px;right:20px;width:min(260px,calc(100vw - 40px));background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:18px 20px;box-shadow:0 12px 40px rgba(0,0,0,.14);z-index:1001;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.97);transform-origin:top right;transition:opacity .2s,transform .2s,visibility .2s;text-align:left}
+.next-week-popover.open{opacity:1;visibility:visible;transform:none}
+.popover-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#86868b;margin-bottom:14px}
+.popover-row+.popover-row{margin-top:12px}
+.popover-close{position:absolute;top:10px;right:12px;width:26px;height:26px;border:none;border-radius:50%;background:rgba(0,0,0,.05);color:#86868b;font-size:18px;line-height:1;cursor:pointer}
+.popover-close:hover{background:rgba(0,0,0,.1);color:#1d1d1f}
+/* Dasara theme */
+.dasara-bg{position:fixed;left:0;right:0;bottom:0;height:42vh;min-height:240px;overflow:hidden;pointer-events:none;z-index:-1}
+.dasara-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 100%,rgba(255,170,60,.28),rgba(255,170,60,0) 70%)}
+.dasara-bg svg{position:absolute;left:50%;bottom:0;width:max(100%,760px);height:auto;transform:translateX(-50%)}
+.lights{fill:none;stroke:#f5a300;stroke-width:5.5;stroke-linecap:round;stroke-dasharray:0 26;filter:drop-shadow(0 0 3px rgba(255,179,0,.8));animation:twinkle 2.2s ease-in-out infinite alternate}
+.lights-b{stroke-dashoffset:13;animation-delay:1.1s}
+@keyframes twinkle{from{opacity:.45}to{opacity:1}}
+.sky{position:fixed;inset:0;pointer-events:none;z-index:-2}.sky svg{width:100%;height:100%}
+.st{animation:twinkle 3s ease-in-out infinite alternate}
+.cloud{animation:drift 90s linear infinite}.cloud.c2{animation-duration:130s;animation-delay:-60s}
+@keyframes drift{from{transform:translateX(-160px)}to{transform:translateX(1360px)}}
+.bird{animation:drift 70s linear infinite;animation-delay:-20s}
+.moon{animation:moonfloat 12s ease-in-out infinite alternate}
+@keyframes moonfloat{to{transform:translateY(10px)}}
+.fw{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:1 9;opacity:0;transform-box:fill-box;transform-origin:center;animation:burst 6s ease-out infinite}
+@keyframes burst{0%{transform:scale(.05);opacity:0}6%{opacity:1}45%{transform:scale(1);opacity:.9}70%,100%{transform:scale(1.15);opacity:0}}
+.lant{opacity:0;animation:rise 26s linear infinite}
+@keyframes rise{0%{transform:translateY(0);opacity:0}10%{opacity:.9}85%{opacity:.7}100%{transform:translateY(-880px);opacity:0}}
+.walk{animation:march 45s linear infinite}
+@keyframes march{from{transform:translateX(-180px)}to{transform:translateX(1380px)}}
+.bob{animation:bob .9s ease-in-out infinite alternate}@keyframes bob{to{transform:translateY(-2px)}}
+.leg{transform-box:fill-box;transform-origin:50% 0;animation:step 1.8s ease-in-out infinite alternate}.lb{animation-direction:alternate-reverse}
+@keyframes step{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+.arrow{opacity:0;animation:shoot 8s linear infinite}
+@keyframes shoot{0%{transform:translateX(0);opacity:0}4%{opacity:1}58%{transform:translateX(800px);opacity:1}60%,100%{transform:translateX(800px);opacity:0}}
+.rav{animation:hit 8s linear infinite}
+@keyframes hit{0%,58%{transform:none}60%{transform:translateX(5px)}63%{transform:translateX(-3px)}66%,100%{transform:none}}
+.halo{opacity:0;animation:flash 8s linear infinite}
+@keyframes flash{0%,58%{opacity:0}61%{opacity:.55}80%,100%{opacity:0}}
+.heads{transform-box:fill-box;transform-origin:50% 100%;animation:sway 4s ease-in-out infinite alternate}
+@keyframes sway{from{transform:rotate(-2.5deg)}to{transform:rotate(2.5deg)}}
+.rama{animation:bob 3s ease-in-out infinite alternate}
+.fx{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:1 9;opacity:0;transform-box:fill-box;transform-origin:center;animation:fxb 24s linear infinite}
+@keyframes fxb{0%,44%{transform:scale(.05);opacity:0}47%{opacity:1}58%{transform:scale(1);opacity:.9}72%,100%{transform:scale(1.15);opacity:0}}
+.rfly{animation:rfly 24s ease-in-out infinite}
+@keyframes rfly{0%{transform:translate(-240px,330px);opacity:1}14%{transform:translate(240px,250px)}34%{transform:translate(260px,245px)}46%{transform:translate(270px,300px)}62%{transform:translate(340px,610px)}94%{transform:translate(340px,610px);opacity:1}98%,100%{transform:translate(340px,610px);opacity:0}}
+.arrow{animation:ashoot 24s linear infinite}
+@keyframes ashoot{0%,22%{transform:translateX(0);opacity:0}23%{opacity:1}33%{transform:translateX(630px);opacity:1}34%,100%{transform:translateX(630px);opacity:0}}
+.halo{animation:rflash 24s linear infinite}
+@keyframes rflash{0%,33%{opacity:0}35%{opacity:.7}41%,100%{opacity:0}}
+.rav{transform-origin:0 0;animation:rfall 24s linear infinite}
+@keyframes rfall{0%{opacity:0;transform:none}3%{opacity:1}34%{transform:none}35%{transform:translateX(7px)}36%{transform:translateX(-5px)}37%{transform:translateX(3px)}40%{transform:none;animation-timing-function:ease-in}50%{transform:rotate(82deg)}53%{transform:rotate(77deg)}94%{transform:rotate(77deg);opacity:1}98%,100%{transform:rotate(77deg);opacity:0}}
+.dust{opacity:0;animation:rdust 24s linear infinite}
+@keyframes rdust{0%,49%{opacity:0}51%{opacity:.6}60%,100%{opacity:0}}
+.celeb{opacity:0;animation:celeb 24s linear infinite}
+@keyframes celeb{0%,44%{opacity:0}50%,92%{opacity:1}98%,100%{opacity:0}}
+.jump{animation:jump .8s ease-in-out infinite alternate}@keyframes jump{to{transform:translateY(-16px)}}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flick .5s ease-in-out infinite alternate}@keyframes flick{to{transform:scale(1.2,.85)}}
+.petal{animation:fall 9s linear infinite}@keyframes fall{to{transform:translate(40px,840px) rotate(360deg)}}
+.header{position:relative}
+.scene{position:absolute;top:-20px;left:-20px;right:-20px;bottom:-8px;z-index:-1;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.15);pointer-events:none;background:#05051c}
+.scene svg{width:100%;height:100%;display:block}
+.logo-title{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.45)}.date-display{color:#e6e0f2;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+@keyframes rfly{0%{transform:translate(-260px,330px);opacity:1}14%{transform:translate(560px,240px)}34%{transform:translate(590px,230px)}46%{transform:translate(640px,300px)}62%{transform:translate(764px,455px)}94%{transform:translate(764px,455px);opacity:1}98%,100%{transform:translate(764px,455px);opacity:0}}
+@keyframes ashoot{0%,22%{transform:translateX(0);opacity:0}23%{opacity:1}33%{transform:translateX(1880px);opacity:1}34%,100%{transform:translateX(1880px);opacity:0}}
+.walk{animation:march2 70s linear infinite}
+@keyframes march2{from{transform:translateX(-200px)}to{transform:translateX(3100px)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style></head>
+<body>
+
+
+<button class="nav-button" id="nextWeekToggle" aria-expanded="false" aria-controls="nextWeekPopover">Next Week's Hosts</button>
+<div class="next-week-popover" id="nextWeekPopover" role="dialog" aria-label="Next week's hosts">
+<button class="popover-close" id="nextWeekClose" aria-label="Close">&times;</button>
+<div class="popover-title">Next Week</div>
+<div class="popover-row"><div class="host-label">Host Master</div><div class="host-name" id="nextHostMaster"></div></div>
+<div class="popover-row"><div class="host-label">Host Standby</div><div class="host-name" id="nextHostStandby"></div></div>
+</div>
+
+<div class="header">
+<div class="scene" aria-hidden="true"><svg viewBox="0 0 1600 320" preserveAspectRatio="xMidYMax slice">
+<defs>
+<linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05051c"/><stop offset=".6" stop-color="#1a0f4a"/><stop offset=".9" stop-color="#5a2450"/><stop offset="1" stop-color="#b8501c"/></linearGradient>
+<linearGradient id="gndG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a8502f"/><stop offset="1" stop-color="#3d1a2a"/></linearGradient>
+<linearGradient id="goldG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6c455"/><stop offset="1" stop-color="#b87420"/></linearGradient>
+<radialGradient id="moonG"><stop offset="0" stop-color="#fff0b8"/><stop offset="1" stop-color="#fff0b8" stop-opacity="0"/></radialGradient>
+<radialGradient id="auraG"><stop offset="0" stop-color="#7fb8ff" stop-opacity=".6"/><stop offset="1" stop-color="#7fb8ff" stop-opacity="0"/></radialGradient>
+<pattern id="arch" width="30" height="60" patternUnits="userSpaceOnUse"><path d="M7 60 V30 A8 8 0 0 1 23 30 V60Z" fill="#6b3410"/></pattern>
+<pattern id="archLit" width="30" height="60" patternUnits="userSpaceOnUse"><path d="M9 60 V32 A6 6 0 0 1 21 32 V60Z" fill="#ffd27a"/></pattern>
+</defs>
+<rect width="1600" height="320" fill="url(#skyG)"/>
+<g id="stars"></g>
+<g class="moon"><circle cx="110" cy="70" r="46" fill="url(#moonG)"/><circle cx="110" cy="70" r="14" fill="#ffe08a"/></g>
+<g fill="url(#goldG)"><rect x="0" y="240" width="420" height="60"/><rect x="40" y="215" width="300" height="25"/><rect x="130" y="185" width="90" height="30"/><rect x="148" y="162" width="54" height="23"/><path d="M150 162 L175 125 L200 162Z"/>
+<rect x="1170" y="240" width="430" height="60"/><rect x="1250" y="215" width="280" height="25"/><rect x="1340" y="185" width="90" height="30"/><rect x="1358" y="162" width="54" height="23"/><path d="M1358 162 L1385 125 L1412 162Z"/></g>
+<rect x="0" y="240" width="420" height="60" fill="url(#arch)"/><rect x="1170" y="240" width="430" height="60" fill="url(#arch)"/>
+<g class="st" style="animation-duration:2.5s"><rect x="0" y="240" width="420" height="60" fill="url(#archLit)" opacity=".8"/><rect x="1170" y="240" width="430" height="60" fill="url(#archLit)" opacity=".8"/></g>
+<path d="M0 296 Q400 288 800 297 T1600 294 V320 H0Z" fill="url(#gndG)"/>
+<g transform="scale(.55)"><g id="fw"></g><g class="celeb" id="celeb"></g>
+<g transform="translate(2527 545)"><circle class="halo" cx="0" cy="-210" r="95" fill="#ff7a00"/>
+<g class="rav"><ellipse class="dust" cx="120" cy="-4" rx="60" ry="16" fill="#d9a066"/>
+<path d="M-36 -112 L36 -112 L46 -6 L-46 -6Z" fill="#3b3a8f"/><path d="M-8 -112 L12 -112 L20 -24 L-2 -24Z" fill="#c0242b" stroke="#e0a821" stroke-width="2"/>
+<ellipse cx="-24" cy="-2" rx="18" ry="7" fill="#6b3a1a"/><ellipse cx="26" cy="-2" rx="18" ry="7" fill="#6b3a1a"/>
+<rect x="-32" y="-208" width="64" height="94" rx="14" fill="#c98a5a"/><rect x="-36" y="-122" width="72" height="10" fill="#e0a821"/>
+<path d="M-26 -200 Q0 -176 26 -200" fill="none" stroke="#e0a821" stroke-width="5"/>
+<path d="M-32 -190 L-92 -152" stroke="#c98a5a" stroke-width="14" stroke-linecap="round"/><path d="M32 -190 L64 -150" stroke="#c98a5a" stroke-width="14" stroke-linecap="round"/>
+<path d="M-92 -152 Q-122 -194 -142 -140 L-110 -136Z" fill="#cfd8e0"/>
+<g class="heads"><g id="rheads"></g><circle cx="0" cy="-226" r="20" fill="#c98a5a"/><path d="M-22 -238 L-18 -272 L-8 -250 L0 -280 L8 -250 L18 -272 L22 -238Z" fill="#e0a821"/><path d="M-14 -220 Q0 -212 14 -220 Q0 -227 -14 -220Z" fill="#241012"/><circle cx="-7" cy="-230" r="2" fill="#241012"/><circle cx="7" cy="-230" r="2" fill="#241012"/></g>
+</g></g>
+<g transform="translate(652 200) rotate(4)"><g class="arrow"><circle cx="20" cy="0" r="14" fill="#ffb340" opacity=".4"/><path d="M0 0 H38" stroke="#ffd54a" stroke-width="3" stroke-linecap="round"/><path d="M38 -6 L50 0 L38 6Z" fill="#ff7a00"/></g></g>
+<g class="rfly"><circle cx="20" cy="-10" r="95" fill="url(#auraG)"/><g class="rama">
+<path d="M-10 52 L-20 90" stroke="#3a7bd5" stroke-width="10" stroke-linecap="round"/><path d="M10 52 L32 80" stroke="#3a7bd5" stroke-width="10" stroke-linecap="round"/>
+<path d="M-14 -45 L14 -45 L16 5 L-16 5Z" fill="#3a7bd5"/><path d="M-16 5 L16 5 L28 56 Q0 64 -28 56Z" fill="#f59e0b"/>
+<path d="M-16 -40 L16 -8" stroke="#dc2626" stroke-width="5"/><path d="M-26 40 Q-50 60 -44 84" stroke="#dc2626" stroke-width="7" fill="none" stroke-linecap="round"/>
+<path d="M10 -35 L64 -30" stroke="#3a7bd5" stroke-width="9" stroke-linecap="round"/><path d="M-8 -35 L30 -30" stroke="#3a7bd5" stroke-width="8" stroke-linecap="round"/>
+<path d="M62 -92 Q104 -30 62 32" fill="none" stroke="#e0a821" stroke-width="5" stroke-linecap="round"/><path d="M62 -92 L30 -30 L62 32" fill="none" stroke="#fff3d6" stroke-width="1.2"/>
+<circle cy="-62" r="14" fill="#3a7bd5"/><path d="M-14 -64 Q-26 -84 -12 -90 Q0 -80 14 -90 Q24 -80 14 -64Z" fill="#1a1440"/><path d="M-11 -74 L-8 -96 L0 -82 L8 -96 L11 -74Z" fill="#e0a821"/></g></g>
+<g id="eleRow" transform="translate(0 575)"></g></g>
+<defs><g id="eleTpl" fill="#2a1b54"><g class="bob">
+<rect class="leg la" x="-34" y="-32" width="11" height="32" rx="4"/><rect class="leg lb" x="-16" y="-32" width="11" height="32" rx="4"/>
+<rect class="leg lb" x="12" y="-32" width="11" height="32" rx="4"/><rect class="leg la" x="30" y="-32" width="11" height="32" rx="4"/>
+<ellipse cx="0" cy="-48" rx="48" ry="29"/><circle cx="50" cy="-62" r="21"/><ellipse cx="38" cy="-58" rx="10" ry="15" opacity=".7"/>
+<path d="M63 -52 Q84 -44 76 -12 Q74 -4 82 -6" fill="none" stroke="#2a1b54" stroke-width="10" stroke-linecap="round"/>
+<path d="M-34 -72 Q0 -86 34 -72 L38 -40 Q0 -32 -38 -40Z" fill="#e8590c"/>
+<path d="M-38 -40 Q0 -32 38 -40" fill="none" stroke="#ffc933" stroke-width="3" stroke-dasharray="3 4"/>
+<rect x="-14" y="-90" width="28" height="16" rx="3" fill="#ffc933"/><path d="M-18 -90 L0 -106 L18 -90Z" fill="#c2410c"/>
+<path d="M62 -80 Q52 -90 40 -80" fill="none" stroke="#ffc933" stroke-width="3"/>
+<path d="M64 -46 Q80 -44 82 -56" fill="none" stroke="#fff3d6" stroke-width="3" stroke-linecap="round"/>
+</g></g></defs></svg></div>
+<div class="logo-title">Scrum Team Selector</div>
+<div class="date-display" id="currentDate"></div>
+<div class="host-container">
+<div class="host-card"><div class="host-label">Host Master</div><div class="host-name" id="hostMaster"></div></div>
+<div class="host-card"><div class="host-label">Host Standby</div><div class="host-name" id="hostStandby"></div></div>
+<div class="host-card"><div class="host-label">This week KT</div><div class="host-name">Amit</div></div>
+</div></div>
+
+<div class="main-container">
+<div class="column"><div class="column-title">Teams to Present</div><ul id="allTeams" class="team-list"></ul></div>
+<div class="column"><div class="column-title">Currently Presenting</div>
+<div class="presenting-container">
+<div id="currentTeam" class="current-team">Ready to begin</div>
+<div class="spin-container" id="spinContainer"><div class="pointer">▼</div><div id="reel" class="reel"></div></div>
+<div class="timer-display" id="timerDisplay"><div class="timer-label">Elapsed Time</div><div class="timer-time" id="elapsedTime">0:00</div></div>
+<button class="kt-button" id="ktButton">Select Presenter</button>
+</div></div>
+<div class="column"><div class="column-title">Presented</div><ul id="chosenTeams" class="team-list"><div class="empty-state">No teams yet</div></ul></div>
+</div>
+
+<button id="generateButton" class="action-button">Choose Team</button>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+const teams=[{name:"[ST-404] Scrum Team NOT FOUND?"},{name:"[ST-1] Scrum Team CCPS"},{name:"[ST-3] Team Dolphin"},{name:"[ST-5] Team SiAB"},{name:"[ST-7] Team Owls"},{name:"[ST-8] Team Eagle"}];
+let currentTeam=null,startTime=null,teamInfinityAdded=false,teamInfinityDone=false,ktPresenterSelected=false,raf=null;
+const alreadyPresented=["Purush","Harsith","Rohan","Anupriya","Abhishek","Kanchan","Paras","Sreeram","Madan","Kavitha","Pankaj","Anand","Natesh","Chethan","Arjun","Amit"];
+const ktMasterList=["Anil","Arjun","Aneesh","Bala 🏃","Kanchan","Madan","Madhu","Mahesh","Karthik","Jaipal","Harsha","Sreeram","Kavya","Kavitha","Sunil","Rajyogi","Pankaj","Deeksith","Purush","Sneha","Anand","Ankit","Paras","Manish","Amit","Anupriya","Natesh","Rohan","Kishore","Chethan","Sushmitha","Harsith","Prakriti","Pooja","Abhishek","Rahul","Suneel"];
+const hosts=["Aayush","Abhishek","Amit","Aneesh","Anil","Anupriya","Anusha","Arjun","Bala 🏃","Bhoomi","Chethan","Chirag","Deekshith","Harsha","Harsith","Jaipal","Kanchan","Karan","Karthik","Kavya","Kishore","Madan","Madhu","Manish","Manoj","Naveen","Pankaj","Paras","Pooja","Prakriti","Purush","Rahul","Rajyogi","Rohan","Rohit","Sheel","Sharmistha","Sneha","Sreeram","Srilakshmi","Sushmitha"];
+const $=id=>document.getElementById(id);
+function setDate(){const d=new Date();let f=d.toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"});const n=d.getDate();const s=n%10===1&&n!==11?"st":n%10===2&&n!==12?"nd":n%10===3&&n!==13?"rd":"th";$("currentDate").textContent=f.replace(n,n+s)}
+function getGlobalWeeklyHost(list,modulo=list.length,weeksAhead=0){
+const now=new Date();now.setUTCDate(now.getUTCDate()+7*weeksAhead);
+const dow=now.getUTCDay();const diff=(dow===0?-6:1)-dow;const monday=new Date(now);monday.setUTCDate(now.getUTCDate()+diff);
+const soy=new Date(Date.UTC(now.getUTCFullYear(),0,1));
+const days=Math.floor((monday-soy)/864e5);const w=Math.floor(days/7)+5;
+return{hostMaster:list[(w%modulo)%list.length],hostStandby:list[((w+10)%modulo)%list.length],weekOfYear:w}}
+function setHost(){const c=getGlobalWeeklyHost(hosts);$("hostMaster").innerText=c.hostMaster;$("hostStandby").innerText=c.hostStandby;
+const n=getGlobalWeeklyHost(hosts,hosts.length,1);$("nextHostMaster").innerText=n.hostMaster;$("nextHostStandby").innerText=n.hostStandby}
+const tog=$("nextWeekToggle"),pop=$("nextWeekPopover");
+function setOpen(o){pop.classList.toggle("open",o);tog.setAttribute("aria-expanded",o)}
+tog.addEventListener("click",e=>{e.stopPropagation();setOpen(!pop.classList.contains("open"))});
+$("nextWeekClose").addEventListener("click",()=>setOpen(false));
+document.addEventListener("click",e=>{if(!pop.contains(e.target))setOpen(false)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false)});
+function initTeams(){const ul=$("allTeams");teams.forEach(t=>{const li=document.createElement("li");li.className="team-item";li.textContent=t.name;li.dataset.teamName=t.name;ul.appendChild(li)})}
+function updateTimer(){const s=Math.floor((Date.now()-startTime)/1000);$("elapsedTime").textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0");raf=requestAnimationFrame(updateTimer)}
+function startTimer(){if(raf)cancelAnimationFrame(raf);startTime=Date.now();updateTimer()}
+function stopTimer(){if(raf){cancelAnimationFrame(raf);raf=null}}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
+function pool(){const a=ktMasterList.filter(n=>!alreadyPresented.includes(n));return a.length?a:ktMasterList}
+function buildReel(){const reel=$("reel"),f=document.createDocumentFragment();const s=shuffle(pool());[...s,...s,...s].forEach(n=>{const d=document.createElement("div");d.className="name-item";d.textContent=n;f.appendChild(d)});reel.innerHTML="";reel.appendChild(f)}
+function spinKT(){const b=$("ktButton");b.disabled=true;const ct=$("currentTeam"),sc=$("spinContainer"),reel=$("reel");
+ct.style.display="none";sc.style.display="block";reel.style.transition="none";reel.style.transform="translate3d(0,0,0)";buildReel();void reel.offsetHeight;
+reel.style.transition="transform 4s cubic-bezier(0.17,0.67,0.24,1.3)";
+setTimeout(()=>{const items=reel.querySelectorAll(".name-item");requestAnimationFrame(()=>items.forEach(el=>el.classList.add("reveal")));
+const s=shuffle(pool());const winner=s[0];reel.style.transform=`translate3d(0,-${s.length*2*100}px,0)`;
+setTimeout(()=>{requestAnimationFrame(()=>items.forEach(el=>{if(el.textContent===winner)el.classList.add("winner")}));
+if(typeof confetti!=="undefined")confetti({particleCount:150,spread:80,origin:{y:.6}});
+ct.style.display="flex";ct.textContent=winner+" will present KT next week!";ct.style.background="linear-gradient(135deg,#22c55e,#16a34a)";
+sc.style.display="none";b.textContent="Select Again";b.disabled=false;ktPresenterSelected=true;
+$("generateButton").textContent="End";$("generateButton").style.display="block"},4000)},100)}
+function generateRandomTeam(){const list=$("chosenTeams");
+if(currentTeam){const d=Math.floor((Date.now()-startTime)/1000);const t=Math.floor(d/60)+":"+String(d%60).padStart(2,"0");
+if(list.querySelector(".empty-state"))list.innerHTML="";const li=document.createElement("li");li.className="presented-item";
+li.innerHTML=`<span>${currentTeam.name}</span><span class="time-badge ${d<180?"time-success":"time-danger"}">${t}</span>`;list.appendChild(li)}
+if(teams.length===0&&!teamInfinityAdded)$("generateButton").textContent="Move to KT Selector";
+if(teams.length===0&&teamInfinityAdded&&!teamInfinityDone){teamInfinityDone=true;stopTimer();
+$("timerDisplay").style.display="none";$("generateButton").style.display="none";
+document.querySelectorAll(".column-title")[1].textContent="🎯 KT Presenter Selection";
+$("currentTeam").style.display="none";$("spinContainer").classList.add("active");$("ktButton").classList.add("active");buildReel();return}
+if(teams.length===0&&!teamInfinityAdded){teams.push({name:"[ST-100] Team Infinity"});teamInfinityAdded=true;
+const li=document.createElement("li");li.className="team-item";li.textContent="[ST-100] Team Infinity";li.dataset.teamName="[ST-100] Team Infinity";$("allTeams").appendChild(li)}
+currentTeam=teams.splice(Math.floor(Math.random()*teams.length),1)[0];startTimer();
+const ct=$("currentTeam");ct.classList.remove("active");void ct.offsetWidth;ct.classList.add("active");ct.textContent=currentTeam.name;
+$("allTeams").querySelectorAll(".team-item").forEach(i=>{if(i.dataset.teamName===currentTeam.name){i.classList.add("slide-out");setTimeout(()=>i.remove(),250)}})}
+$("ktButton").addEventListener("click",spinKT);
+$("generateButton").addEventListener("click",()=>{if(ktPresenterSelected){const b=$("generateButton");b.disabled=true;b.textContent="Complete";stopTimer()}else generateRandomTeam()});
+(function(){const t=$("eleTpl"),row=$("eleRow"),ns="http://www.w3.org/2000/svg";
+for(let i=0;i<3;i++){const c=t.cloneNode(true);c.removeAttribute("id");const w=document.createElementNS(ns,"g");w.setAttribute("class","walk");w.style.animationDelay=(-i*15)+"s";w.appendChild(c);row.appendChild(w)}})();
+(function(){const R=Math.random,add=(id,h)=>{$(id).innerHTML+=h},D=d=>d?d-24:0;let h="";
+for(let i=0;i<90;i++)h+=`<circle class="st" cx="${R()*1600|0}" cy="${R()*230|0}" r="${(R()*1+.5).toFixed(1)}" fill="#fff" style="animation-delay:-${(R()*3).toFixed(1)}s"/>`;add("stars",h);
+h="";for(let i=0;i<10;i++){const x=-108+24*i;h+=`<circle cx="${x}" cy="-262" r="11" fill="#b97a4b"/><path d="M${x-9} -270 L${x-6} -286 L${x} -274 L${x+6} -286 L${x+9} -270Z" fill="#e0a821"/>`}add("rheads",h);
+h="";[[220,170,"#ff5a36",0],[730,120,"#ffd23f",1],[2270,160,"#ff4d8d",2],[2730,240,"#4cc9f0",3],[1450,105,"#f5a300",4],[330,330,"#c77dff",5]].forEach(([x,y,c,d])=>{h+=`<g transform="translate(${x} ${y})"><circle class="fx" r="84" stroke="${c}" style="animation-delay:${D(d)}s"/><circle class="fx" r="48" stroke="#fff3b0" style="animation-delay:${D(d)+.3}s"/></g>`});add("fw",h);
+h="";[90,170,250,330,410,490,570,640].forEach((x,i)=>{h+=`<g transform="translate(${x} 540) scale(1.4)" fill="#1a0f2e"><g class="jump" style="animation-delay:-${(i*.37).toFixed(2)}s"><circle cy="-34" r="6"/><path d="M-6 -28 L6 -28 L8 -6 L-8 -6Z"/><path d="M-6 -26 L-14 -44 M6 -26 L14 -44 M-6 -6 L-8 4 M6 -6 L8 4" stroke="#1a0f2e" stroke-width="3" fill="none" stroke-linecap="round"/></g></g>`});
+for(let i=0;i<27;i++)h+=`<g transform="translate(${40+i*108} 568)"><circle cy="-8" r="12" fill="#ffb340" opacity=".3"/><path d="M-8 0 Q0 9 8 0Z" fill="#c2410c"/><path class="flame" d="M0 -2 Q-4 -9 0 -16 Q4 -9 0 -2Z" fill="#ffd54a" style="animation-delay:-${(R()*.5).toFixed(2)}s"/></g>`;
+for(let i=0;i<22;i++)h+=`<g transform="translate(${R()*2900|0} -20)"><ellipse class="petal" rx="5" ry="3" fill="${i%2?"#ff9f1c":"#e8590c"}" style="animation-delay:-${(R()*9).toFixed(1)}s;animation-duration:${(8+R()*5).toFixed(1)}s"/></g>`;
+for(let i=0;i<9;i++)h+=`<g transform="translate(${150+i*320} 640)" fill="#ffb340"><g class="lant" style="animation-delay:-${(R()*26).toFixed(1)}s"><circle r="16" opacity=".25"/><ellipse rx="6" ry="8"/></g></g>`;add("celeb",h)})();
+setDate();setHost();initTeams();
+</script></body></html>
