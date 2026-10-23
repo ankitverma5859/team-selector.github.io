@@ -211,7 +211,7 @@ const dow=now.getUTCDay();const diff=(dow===0?-6:1)-dow;const monday=new Date(no
 const soy=new Date(Date.UTC(now.getUTCFullYear(),0,1));
 const days=Math.floor((monday-soy)/864e5);const w=Math.floor(days/7)+5;
 return{hostMaster:list[(w%modulo)%list.length],hostStandby:list[((w+10)%modulo)%list.length],weekOfYear:w}}
-function setHost(){const c=getGlobalWeeklyHost(hosts);$("hostMaster").innerText="Karthik";$("hostStandby").innerText=c.hostStandby;
+function setHost(){const c=getGlobalWeeklyHost(hosts);$("hostMaster").innerText=n.host;$("hostStandby").innerText=c.hostStandby;
 const n=getGlobalWeeklyHost(hosts,hosts.length,1);$("nextHostMaster").innerText=n.host;$("nextHostStandby").innerText=n.hostStandby}
 const tog=$("nextWeekToggle"),pop=$("nextWeekPopover");
 function setOpen(o){pop.classList.toggle("open",o);tog.setAttribute("aria-expanded",o)}
