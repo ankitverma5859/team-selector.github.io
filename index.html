@@ -562,7 +562,9 @@
         font-size: 18px;
         line-height: 1;
         cursor: pointer;
-        transition: background 0.2s, color 0.2s;
+        transition:
+          background 0.2s,
+          color 0.2s;
       }
 
       .popover-close:hover {
@@ -571,9 +573,8 @@
       }
     </style>
   </head>
-  
-  <body>
 
+  <body>
     <button
       class="nav-button"
       id="nextWeekToggle"
@@ -617,7 +618,7 @@
         </div>
         <div class="host-card">
           <div class="host-label">This week KT</div>
-          <div class="host-name" id="nextWeekKt">No KT</div>
+          <div class="host-name" id="nextWeekKt">Jaipal</div>
         </div>
       </div>
     </div>
@@ -699,7 +700,8 @@
         "Natesh",
         "Chethan",
         "Arjun",
-        "Amit"
+        "Amit",
+        "Jaipal",
       ];
       const ktMasterList = [
         "Anil",
@@ -850,7 +852,7 @@
         const next = getGlobalWeeklyHost(hosts, hosts.length, 1);
         document.getElementById("nextHostMaster").innerText = next.hostMaster;
         document.getElementById("nextHostStandby").innerText = next.hostStandby;
-      }      
+      }
 
       // Next week popover
       const nextWeekToggle = document.getElementById("nextWeekToggle");
