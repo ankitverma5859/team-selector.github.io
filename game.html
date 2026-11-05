@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#FFD23F">
+<title>Who Am I?</title>
+<style>
+:root{
+  --bg:#FFD23F; --bg2:#FFDE6B; --ink:#16130A; --dim:rgba(22,19,10,.62);
+  --accent:#0F4D36; --track:rgba(22,19,10,.14);
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px); --sar:env(safe-area-inset-right,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;
+  -webkit-user-select:none;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);overscroll-behavior:none;
+  touch-action:none;position:fixed;width:100%}
+body{font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink)}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;
+  padding:calc(var(--sat) + 12px) calc(var(--sar) + 18px) calc(var(--sab) + 14px) calc(var(--sal) + 18px);
+  background:radial-gradient(110% 70% at 50% 42%,var(--bg2) 0%,var(--bg) 72%)}
+.bar{height:8px;border-radius:4px;background:var(--track);margin-top:14px;overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:var(--accent);transform-origin:left;transition:transform .25s linear}
+#stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;
+  margin:10px -6px;touch-action:none;cursor:pointer;border-radius:28px;overflow:hidden}
+#name{font-weight:900;text-align:center;line-height:1;letter-spacing:-.03em;color:var(--ink);
+  max-width:100%;padding:0 4px;word-break:keep-all}
+#name.in{animation:pop .22s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+#stage.ok::after{content:"";position:absolute;inset:0;background:#fff;opacity:0;animation:flash .45s ease-out;pointer-events:none}
+@keyframes flash{0%{opacity:.45}100%{opacity:0}}
+#toast{position:absolute;top:10%;left:50%;transform:translate(-50%,0);font-weight:900;font-size:1.6rem;
+  color:var(--accent);opacity:0;pointer-events:none;white-space:nowrap}
+#toast.show{animation:toast .8s ease-out}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,16px) scale(.8)}20%{opacity:1;transform:translate(-50%,0) scale(1)}
+  75%{opacity:1}100%{opacity:0;transform:translate(-50%,-18px)}}
+#toast.info{color:var(--accent);font-size:1.15rem}
+footer{margin-top:12px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}
+.who{display:flex;gap:10px;align-items:baseline}
+.who strong{font-size:1.15rem;color:var(--ink);font-weight:800}
+.hint{font-size:.72rem;color:var(--dim);letter-spacing:.04em;line-height:1.5}
+.hint b{color:var(--accent);font-weight:800}
+.overlay{position:absolute;inset:0;z-index:5;background:rgba(255,210,63,.98);display:none;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;
+  padding-top:calc(var(--sat) + 24px);padding-bottom:calc(var(--sab) + 24px)}
+.overlay.show{display:flex}
+.sum h2{margin:0;font-size:1rem;letter-spacing:.14em;color:var(--accent)}
+.big{font-size:6.5rem;font-weight:900;line-height:1;color:var(--ink)}
+.row{display:flex;gap:10px;width:100%;max-width:340px}
+.row div{flex:1;background:rgba(22,19,10,.08);border-radius:16px;padding:10px}
+.row b{display:block;font-size:1.25rem;color:var(--ink)} .row span{font-size:.72rem;color:var(--dim)}
+@keyframes pulse{50%{opacity:.45}}
+.tapnext{margin-top:10px;font-size:1.05rem;font-weight:800;color:var(--accent);animation:pulse 1.2s infinite}
+.next{font-size:.8rem;color:var(--dim)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-height:600px){.hint{display:none}}
+</style>
+</head>
+<body>
+<main id="app">
+
+  <div class="bar"><i id="barFill"></i></div>
+
+  <section id="stage" aria-live="polite">
+    <div id="name">&nbsp;</div>
+    <div id="toast"></div>
+  </section>
+
+  <footer>
+    <div class="who"><span class="hint">Guesser</span><strong id="guesser">You</strong></div>
+    <div class="hint"><b>TAP ONCE</b> – CORRECT / NEXT NAME &nbsp;·&nbsp; <b>DOUBLE TAP</b> – CHANGE GUESSER</div>
+  </footer>
+</main>
+
+<div class="overlay sum" id="summary" role="dialog" aria-modal="true">
+  <h2>ROUND OVER</h2>
+  <div class="big" id="sumScore">0</div>
+  <div class="hint">correct guesses</div>
+  <div class="row">
+    <div><b id="sumCorrect">0</b><span>Total correct</span></div>
+    <div><b id="sumGuesser">You</b><span>Last guesser</span></div>
+  </div>
+  <div class="next" id="nextInfo"></div>
+  <div class="tapnext">Tap anywhere to start the next round</div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ---------- Data ---------- */
+  const people = ["Abhishek","Aayush","Amit","Anand","Aneesh","Anil","Anu","Anupriya","Arjun","Asha","Bala","Balu","Bhoomi","Chethan","Chirag","Deekshith","Harsha","Harshith","JP","Kanchan","Karan","Kavitha","Kavya","Kishore","Madan","Madhu","Mahesh","Manish","Manjunath","Manoj","Natesh","Naveen","Pankaj","Paras","Pooja","Prakrithi","Purushothama","Rahul","Rajayogi","Rohit","Rohan","Sharmistha","Sheel","Sneha","Sreeram","Srilaxmi","Sunil","Suneel","Sushmitha","Vaishali"];
+  const guessers = ["You","Sreeram","Asha","Suneel","Rajayogi","Manoj","JP","Naveen","Natesh","Bala","Prakrithi","Amit","Manjunath","Madhu","Karan","Pooja","Harsha","Sunil","Purushothama","Aayush","Balu","Anu","Rohan","Harshith","Madan","Srilaxmi","Chirag","Rahul","Arjun","Anupriya","Bhoomi","Chethan","Abhishek","Sneha","Kishore","Anil"];
+
+  const ROUND_SECONDS = 60;
+  const DOUBLE_TAP_MS = 280;
+
+
+  /* ---------- Sound (Web Audio, fully synthesised - works offline) ---------- */
+  const Sound = (() => {
+    let ctx = null, master = null, noiseBuf = null, buzz = null, iplBus = null, iplTimer = null, lastPhrase = -1, unlocked = false;
+    const hz = (semi, base) => base * Math.pow(2, semi / 12);
+
+    function init(){
+      if (ctx) return true;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      try { ctx = new AC(); } catch (_) { ctx = null; return false; }
+      const comp = ctx.createDynamicsCompressor();
+      master = ctx.createGain(); master.gain.value = 0.9;
+      master.connect(comp); comp.connect(ctx.destination);
+      noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      // soft clipper adds the buzzing "jawari" edge of a sitar string
+      buzz = new Float32Array(256);
+      for (let i = 0; i < 256; i++) { const x = i / 128 - 1; buzz[i] = Math.tanh(x * 2.6); }
+      return true;
+    }
+    // Must be called from a user gesture (iOS/Android autoplay rules)
+    function unlock(){
+      if (!init()) return;
+      if (ctx.state !== "running") ctx.resume().catch(() => {});
+      if (!unlocked) {
+        unlocked = true;
+        const b = ctx.createBuffer(1, 1, 22050), src = ctx.createBufferSource();
+        src.buffer = b; src.connect(ctx.destination); src.start(0);
+      }
+    }
+    const ready = () => ctx && ctx.state !== "closed";
+
+    /* --- Sitar --- */
+    function pluck(t, f, dur, vel, out){
+      const o1 = ctx.createOscillator(), o2 = ctx.createOscillator();
+      const g2 = ctx.createGain(), ws = ctx.createWaveShaper(), flt = ctx.createBiquadFilter(), g = ctx.createGain();
+      o1.type = "sawtooth"; o2.type = "square";
+      o1.frequency.setValueAtTime(f * 0.985, t);
+      o1.frequency.exponentialRampToValueAtTime(f, t + 0.05);
+      o2.frequency.value = f * 2.004;                 // slightly sharp 2nd partial = sympathetic shimmer
+      g2.gain.value = 0.22;
+      ws.curve = buzz;
+      flt.type = "lowpass"; flt.Q.value = 5;
+      flt.frequency.setValueAtTime(5600, t);
+      flt.frequency.exponentialRampToValueAtTime(Math.max(700, f * 2.2), t + dur * 0.8);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vel, t + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o1.connect(ws); o2.connect(g2); g2.connect(ws); ws.connect(flt); flt.connect(g); g.connect(out);
+      o1.start(t); o2.start(t); o1.stop(t + dur + 0.05); o2.stop(t + dur + 0.05);
+    }
+    // Short Raga Yaman-style phrases, in semitones above Sa (D4)
+    const PHRASES = [
+      [4, 6, 7, 9, 7],
+      [7, 6, 4, 2, 0],
+      [0, 4, 7, 12],
+      [9, 7, 6, 4, 2, 4],
+      [2, 4, 6, 7, 11, 12]
+    ];
+    function sitar(){
+      if (!ready()) return;
+      let i; do { i = Math.floor(Math.random() * PHRASES.length); } while (i === lastPhrase);
+      lastPhrase = i;
+      const p = PHRASES[i], t0 = ctx.currentTime + 0.03;
+      p.forEach((n, k) => {
+        const last = k === p.length - 1;
+        pluck(t0 + k * 0.13, hz(n, 293.66), last ? 1.7 : 0.9, last ? 0.3 : 0.24, master);
+      });
+      pluck(t0, hz(-12, 293.66), 2.0, 0.12, master);   // soft low drone string
+    }
+
+    /* --- IPL-style hype tune (original composition) --- */
+    function noise(t, dur, type, freq, vel, out, q){
+      const src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+      src.buffer = noiseBuf; f.type = type; f.frequency.value = freq; if (q) f.Q.value = q;
+      g.gain.setValueAtTime(vel, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(f); f.connect(g); g.connect(out); src.start(t, Math.random()); src.stop(t + dur + 0.02);
+    }
+    function kick(t, out){
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+      g.gain.setValueAtTime(1, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.3);
+    }
+    function tom(t, out, f, vel){
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.setValueAtTime(f * 1.6, t); o.frequency.exponentialRampToValueAtTime(f, t + 0.08);
+      g.gain.setValueAtTime(vel, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.2);
+      noise(t, 0.05, "bandpass", 2500, vel * 0.3, out, 1);
+    }
+    function clap(t, out){ noise(t, 0.16, "bandpass", 1700, 0.7, out, 0.9); noise(t + 0.012, 0.12, "bandpass", 2400, 0.4, out, 0.9); }
+    function hat(t, out, v){ noise(t, 0.045, "highpass", 8000, v, out); }
+    function crash(t, out){ noise(t, 1.4, "highpass", 4500, 0.55, out); }
+    function brass(t, f, dur, vel, out){
+      const g = ctx.createGain(), flt = ctx.createBiquadFilter();
+      flt.type = "lowpass"; flt.Q.value = 2;
+      flt.frequency.setValueAtTime(700, t); flt.frequency.exponentialRampToValueAtTime(3600, t + 0.05);
+      flt.frequency.exponentialRampToValueAtTime(1400, t + dur);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vel, t + 0.02);
+      g.gain.setValueAtTime(vel, t + dur * 0.7); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      [-6, 6].forEach(c => { const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = f; o.detune.value = c;
+        o.connect(flt); o.start(t); o.stop(t + dur + 0.05); });
+      flt.connect(g); g.connect(out);
+    }
+    function bass(t, f, dur, out){
+      const o = ctx.createOscillator(), g = ctx.createGain(), flt = ctx.createBiquadFilter();
+      o.type = "sawtooth"; o.frequency.value = f; flt.type = "lowpass"; flt.frequency.value = 380;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.55, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(flt); flt.connect(g); g.connect(out); o.start(t); o.stop(t + dur + 0.05);
+    }
+
+    // Riff, in semitones above A3 (220 Hz); null = rest. Four bars, played twice.
+    const RIFF = [
+      [7, null, 7, 10, 12, null, 10, 7],
+      [5, null, 5, 7, 10, null, 7, 5],
+      [7, null, 7, 10, 12, null, 15, 12],
+      [10, 12, 15, 12, 10, 7, 10, 12]
+    ];
+    function ipl(){
+      if (!ready()) return;
+      stop();
+      const bus = ctx.createGain(); bus.gain.value = 0.85; bus.connect(master);
+      iplBus = bus;
+      const BEAT = 60 / 150, EIGHTH = BEAT / 2, BAR = BEAT * 4, t0 = ctx.currentTime + 0.05;
+      for (let bar = 0; bar < 8; bar++) {
+        const b0 = t0 + bar * BAR, second = bar >= 4;
+        if (bar === 0 || bar === 4) crash(b0, bus);
+        for (let beat = 0; beat < 4; beat++) kick(b0 + beat * BEAT, bus);
+        clap(b0 + BEAT, bus); clap(b0 + 3 * BEAT, bus);
+        for (let e = 0; e < 8; e++) hat(b0 + e * EIGHTH, bus, e % 2 ? 0.22 : 0.12);
+        if (bar % 4 === 3) for (let k = 0; k < 8; k++) tom(b0 + 3 * BEAT + k * (BEAT / 8), bus, 120 + (k % 4) * 35, 0.5);  // dhol roll
+        for (let e = 0; e < 8; e++) bass(b0 + e * EIGHTH, e % 2 ? 110 : 55, EIGHTH * 0.9, bus);
+        RIFF[bar % 4].forEach((n, e) => {
+          if (n === null) return;
+          brass(b0 + e * EIGHTH, hz(n, 220), EIGHTH * 0.85, 0.2, bus);
+          if (second) brass(b0 + e * EIGHTH, hz(n + 12, 220), EIGHTH * 0.85, 0.1, bus);
+        });
+      }
+      const end = t0 + 8 * BAR;   // final stab, ~13 s total
+      crash(end, bus); kick(end, bus); clap(end, bus);
+      [0, 3, 7, 12].forEach(n => brass(end, hz(n, 220), 1.0, 0.18, bus));
+      iplTimer = setTimeout(() => { if (iplBus === bus) stop(); }, 16000);
+    }
+    function stop(){
+      clearTimeout(iplTimer); iplTimer = null;
+      if (!ctx || !iplBus) return;
+      const b = iplBus; iplBus = null; const now = ctx.currentTime;
+      b.gain.cancelScheduledValues(now); b.gain.setTargetAtTime(0, now, 0.03);
+      setTimeout(() => { try { b.disconnect(); } catch (_) {} }, 400);
+    }
+    return { unlock, sitar, ipl, stop };
+  })();
+
+  /* ---------- State ---------- */
+  const S = { round:1, guesserIdx:0, score:0, current:null, deck:[], last:null,
+              running:false, paused:false, remainingMs:ROUND_SECONDS*1000, endAt:0 };
+  let summaryAt = 0, tapTimer = null, lastTapAt = 0, tick = null, toastTimer = null;
+
+  const $ = id => document.getElementById(id);
+  const el = { name:$("name"), stage:$("stage"), toast:$("toast"), guesser:$("guesser"),
+    bar:$("barFill"), summary:$("summary"),
+    sumScore:$("sumScore"), sumCorrect:$("sumCorrect"), sumGuesser:$("sumGuesser"),
+    nextInfo:$("nextInfo") };
+
+  /* ---------- Deck ---------- */
+  const shuffle = a => { for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+  const guesser = () => guessers[S.guesserIdx];
+
+  function buildDeck(){
+    const g = guesser();
+    S.deck = shuffle(people.filter(p => p !== g));
+    // avoid same person twice in a row across a reshuffle
+    if (S.deck.length > 1 && S.deck[S.deck.length-1] === S.current) {
+      const i = Math.floor(Math.random()*(S.deck.length-1));
+      [S.deck[i], S.deck[S.deck.length-1]] = [S.deck[S.deck.length-1], S.deck[i]];
+    }
+  }
+  function nextName(){
+    if (!S.deck.length) buildDeck();
+    let n = S.deck.pop();
+    if (n === S.current && S.deck.length){ const m = S.deck.pop(); S.deck.unshift(n); n = m; }
+    S.current = n;
+    renderName();
+  }
+
+  /* ---------- Rendering ---------- */
+  function renderName(){
+    const n = S.current || "";
+    const len = n.length;
+    const vw = len <= 5 ? 26 : Math.min(26, 94 / (len * 0.56));
+    el.name.style.fontSize = "min(" + vw.toFixed(1) + "vw, 22dvh)";
+    el.name.textContent = n;
+    el.name.classList.remove("in"); void el.name.offsetWidth; el.name.classList.add("in");
+  }
+  function renderStatic(){
+    el.guesser.textContent = guesser();
+  }
+  function renderTime(ms){
+    el.bar.style.transform = "scaleX(" + Math.max(0, ms/(ROUND_SECONDS*1000)) + ")";
+  }
+  function toast(text, info){
+    el.toast.textContent = text;
+    el.toast.className = info ? "info" : "";
+    void el.toast.offsetWidth;
+    el.toast.classList.add("show");
+  }
+
+  /* ---------- Timer ---------- */
+  function startTick(){
+    S.endAt = Date.now() + S.remainingMs;
+    clearInterval(tick);
+    tick = setInterval(() => {
+      if (!S.running || S.paused) return;
+      S.remainingMs = S.endAt - Date.now();
+      renderTime(S.remainingMs);
+      if (S.remainingMs <= 0) endRound();
+    }, 100);
+  }
+
+  /* ---------- Actions ---------- */
+  const active = () => S.running && !S.paused;
+
+  function correct(){
+    if (!active()) return;
+    S.score++;
+    Sound.sitar();
+    toast("+1 Correct!");
+    el.stage.classList.remove("ok"); void el.stage.offsetWidth; el.stage.classList.add("ok");
+    if (navigator.vibrate) navigator.vibrate(25);
+    nextName();
+  }
+  function changeGuesser(){
+    if (!active()) return;
+    S.guesserIdx = (S.guesserIdx + 1) % guessers.length;
+    S.current = null;
+    buildDeck();
+    renderStatic();
+    toast(guesser() + " is guessing", true);
+    Sound.ipl();
+    if (navigator.vibrate) navigator.vibrate([15,40,15]);
+    nextName();
+  }
+  function endRound(){
+    if (!S.running) return;
+    S.running = false; S.paused = false; summaryAt = Date.now();
+    clearInterval(tick); cancelTap(); Sound.stop();
+    renderTime(0);
+    el.sumScore.textContent = S.score;
+    el.sumCorrect.textContent = S.score;
+    el.sumGuesser.textContent = guesser();
+    el.nextInfo.textContent = "Next guesser: " + guessers[(S.guesserIdx+1) % guessers.length];
+    el.summary.classList.add("show");
+    if (navigator.vibrate) navigator.vibrate(200);
+  }
+  function startRound(first){
+    if (!first){ S.round++; S.guesserIdx = (S.guesserIdx + 1) % guessers.length; }
+    S.score = 0; S.current = null; S.remainingMs = ROUND_SECONDS*1000;
+    S.running = true; S.paused = false;
+    el.summary.classList.remove("show");
+    buildDeck(); renderStatic(); renderTime(S.remainingMs);
+    nextName();
+    startTick();
+  }
+
+  /* ---------- Gesture: single vs double tap ---------- */
+  function cancelTap(){ clearTimeout(tapTimer); tapTimer = null; lastTapAt = 0; }
+  function onTap(){
+    if (!active()) return;
+    const now = Date.now();
+    if (tapTimer && now - lastTapAt <= DOUBLE_TAP_MS){
+      // second tap in window -> double tap; the pending single tap is cancelled
+      clearTimeout(tapTimer); tapTimer = null; lastTapAt = 0;
+      changeGuesser();
+      return;
+    }
+    lastTapAt = now;
+    tapTimer = setTimeout(() => { tapTimer = null; lastTapAt = 0; correct(); }, DOUBLE_TAP_MS);
+  }
+  // Unlock audio on the first real gesture (needed by iOS Safari and Chrome)
+  ["pointerdown","pointerup","touchend","click"].forEach(t => document.addEventListener(t, Sound.unlock, { capture:true, passive:true }));
+  // Pointer events cover touch + mouse; touch-action:none prevents browser double-tap zoom.
+  el.stage.addEventListener("pointerup", e => { if (e.pointerType === "mouse" && e.button !== 0) return; onTap(); });
+  el.stage.addEventListener("dblclick", e => e.preventDefault());
+  el.stage.addEventListener("contextmenu", e => e.preventDefault());
+
+  /* ---------- Next round: tap anywhere on the summary ---------- */
+  el.summary.addEventListener("pointerup", () => {
+    if (S.running || Date.now() - summaryAt < 700) return; // ignore leftover taps
+    startRound(false); tryFullscreen();
+  });
+
+  /* ---------- Browser hardening ---------- */
+  ["gesturestart","gesturechange","gestureend"].forEach(t => document.addEventListener(t, e => e.preventDefault()));
+  document.addEventListener("touchmove", e => e.preventDefault(), { passive:false });
+  document.addEventListener("selectstart", e => e.preventDefault());
+  document.addEventListener("contextmenu", e => e.preventDefault());
+
+  function tryFullscreen(){
+    const d = document.documentElement;
+    const req = d.requestFullscreen || d.webkitRequestFullscreen || d.msRequestFullscreen;
+    if (!req || document.fullscreenElement || document.webkitFullscreenElement) return;
+    try { const p = req.call(d, { navigationUI:"hide" }); if (p && p.catch) p.catch(() => {}); } catch(_) {}
+  }
+  // Browsers require a user gesture for fullscreen: try now, and again on the first touch.
+  tryFullscreen();
+  document.addEventListener("pointerdown", tryFullscreen, { once:true });
+
+  /* ---------- Go ---------- */
+  startRound(true);
+})();
+</script>
+</body>
+</html>
